@@ -10,7 +10,7 @@ export const StyledButton = styled.button`
   box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.25);
 
   color: #fefefe;
-  font: 700 36px 'Roboto', sans-serif;
+  font: 600 32px 'Roboto', sans-serif;
   transition: 0.2s linear;
 
   &:hover {
