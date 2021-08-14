@@ -1,6 +1,6 @@
+import { darken } from 'polished';
 import styled from 'styled-components';
 import { Form } from '@unform/web';
-import { darken } from 'polished';
 
 export const Container = styled.div``;
 
@@ -8,25 +8,20 @@ export const Unform = styled(Form)`
   display: flex;
   flex-direction: column;
 
-  a {
-    margin: 12px 0 32px;
+  button {
+    margin-top: 32px;
   }
 
-  button {
-    height: 64px;
+  a {
+    margin-top: 12px;
 
-    border: none;
-    border-radius: 10px;
-    background: #072ac8;
-    box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.25);
-
-    color: #fefefe;
-    font: 700 36px 'Roboto', sans-serif;
+    text-decoration: none;
+    font-size: 16px;
+    color: #072ac8;
     transition: 0.2s linear;
 
     &:hover {
-      background-color: ${darken(0.06, '#072ac8')};
-      cursor: pointer;
+      color: ${darken(0.1, '#072ac8')};
     }
   }
 `;

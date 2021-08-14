@@ -2,10 +2,11 @@ import React from 'react';
 
 import Form from '../../components/Form';
 import Input from '../../components/Input';
+import Button from '../../components/Button';
 
 import logoImg from '../../assets/png/logo.png';
 import truckImg from '../../assets/png/truck.png';
-import userImg from '../../assets/png/user.png';
+import emailImg from '../../assets/png/email.png';
 import passwordImg from '../../assets/png/password.png';
 
 import { useAuth } from '../../hooks/AuthContext';
@@ -55,20 +56,24 @@ const Login: React.FC = () => {
         </LogoContainer>
 
         <LoginContainer>
-          <Form submitFunction={handleSubmit}>
-            <Input name="email" icon={userImg} placeholder="Seu email" />
-            <div>
-              <Input
-                name="password"
-                icon={passwordImg}
-                placeholder="Sua senha"
-                type="password"
-              />
-            </div>
+          <Form onSubmit={handleSubmit}>
+            <Input
+              name="email"
+              label="Email"
+              icon={emailImg}
+              placeholder="Seu email"
+            />
+            <Input
+              name="password"
+              label="Senha"
+              icon={passwordImg}
+              placeholder="Sua senha"
+              type="password"
+            />
 
             <a href="/">Esqueci minha senha</a>
 
-            <button type="submit">Entrar</button>
+            <Button type="submit">Entrar</Button>
           </Form>
 
           <SignUpContainer>

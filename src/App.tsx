@@ -5,12 +5,13 @@ import Login from './pages/Login';
 import GlobalStyle from './styles/global';
 
 import { AuthProvider } from './hooks/AuthContext';
+import SignUp from './pages/SignUp';
 
 const App: React.FC = () => {
   return (
     <>
       <AuthProvider>
-        <Login />
+        <SignUp />
       </AuthProvider>
 
       <GlobalStyle />
