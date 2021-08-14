@@ -1,5 +1,6 @@
 import React from 'react';
 
+import Link from '../../components/Link';
 import Form from '../../components/Form';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -71,14 +72,14 @@ const Login: React.FC = () => {
               type="password"
             />
 
-            <a href="/">Esqueci minha senha</a>
+            <Link to="/">Esqueci minha senha</Link>
 
             <Button type="submit">Entrar</Button>
           </Form>
 
           <SignUpContainer>
             <div />
-            <a href="/">Criar conta</a>
+            <Link to="/SignUp">Criar conta</Link>
             <div />
           </SignUpContainer>
         </LoginContainer>

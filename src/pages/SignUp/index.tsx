@@ -11,6 +11,7 @@ import emailImg from '../../assets/png/email.png';
 import arrowImg from '../../assets/png/arrow.png';
 
 import { Container, LogoContainer } from './styles';
+import Link from '../../components/Link';
 
 const SignUp: React.FC = () => {
   return (
@@ -44,10 +45,10 @@ const SignUp: React.FC = () => {
 
           <Button type="submit">Cadastrar-se</Button>
 
-          <a href="/">
+          <Link to="/">
             <img src={arrowImg} alt="Voltar" />
             Já possuo uma conta
-          </a>
+          </Link>
         </Form>
       </div>
     </Container>

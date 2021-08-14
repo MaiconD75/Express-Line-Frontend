@@ -85,4 +85,8 @@ export const SignUpContainer = styled.div`
     width: 172px;
     background-color: #ffc600;
   }
+
+  a {
+    margin-top: 0;
+  }
 `;
