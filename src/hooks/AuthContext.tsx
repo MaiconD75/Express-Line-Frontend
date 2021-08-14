@@ -1,4 +1,5 @@
 import React, { createContext, useCallback, useState, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import api from '../services/api';
 
 interface AuthState {
@@ -22,6 +23,7 @@ export const AuthContext = createContext<AuthContextData>(
 );
 
 export const AuthProvider: React.FC = ({ children }) => {
+  const history = useHistory();
   const [data, setData] = useState<AuthState>(() => {
     const token = localStorage.getItem('@ExpressLine:token');
     const user = localStorage.getItem('@ExpressLine:user');
@@ -33,19 +35,24 @@ export const AuthProvider: React.FC = ({ children }) => {
     return {} as AuthState;
   });
 
-  const login = useCallback(async ({ email, password }) => {
-    const response = await api.post('/sessions', {
-      email,
-      password,
-    });
+  const login = useCallback(
+    async ({ email, password }) => {
+      const response = await api.post('/sessions', {
+        email,
+        password,
+      });
 
-    const { token, user } = response.data;
+      const { token, user } = response.data;
 
-    localStorage.setItem('@ExpressLine:token', token);
-    localStorage.setItem('@ExpressLine:user', JSON.stringify(user));
+      localStorage.setItem('@ExpressLine:token', token);
+      localStorage.setItem('@ExpressLine:user', JSON.stringify(user));
 
-    setData({ token, user });
-  }, []);
+      setData({ token, user });
+
+      history.push('/');
+    },
+    [history],
+  );
 
   const logoff = useCallback(() => {
     localStorage.removeItem('@ExpressLine:token');

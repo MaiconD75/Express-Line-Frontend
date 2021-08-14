@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { useAuth } from '../../hooks/AuthContext';
+
 import Form from '../../components/Form';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -12,8 +14,31 @@ import arrowImg from '../../assets/png/arrow.png';
 
 import { Container, LogoContainer } from './styles';
 import Link from '../../components/Link';
+import api from '../../services/api';
+
+interface SignUpCredentials {
+  name: string;
+  email: string;
+  password: string;
+}
 
 const SignUp: React.FC = () => {
+  const { login } = useAuth();
+
+  async function handleSubmit({
+    name,
+    email,
+    password,
+  }: SignUpCredentials): Promise<void> {
+    await api.post('/users', {
+      name,
+      email,
+      password,
+    });
+
+    login({ email, password });
+  }
+
   return (
     <Container>
       <div>
@@ -22,7 +47,7 @@ const SignUp: React.FC = () => {
           <h1>Express Line</h1>
         </LogoContainer>
 
-        <Form onSubmit={() => alert('submited')}>
+        <Form onSubmit={handleSubmit}>
           <Input
             name="name"
             placeholder="Seu nome"
@@ -36,7 +61,7 @@ const SignUp: React.FC = () => {
             icon={emailImg}
           />
           <Input
-            name="Password"
+            name="password"
             placeholder="Sua senha"
             label="Senha"
             icon={passwordImg}
