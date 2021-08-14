@@ -1,20 +1,8 @@
 import styled from 'styled-components';
-import { darken } from 'polished';
 
 export const Container = styled.div`
   display: flex;
   flex-direction: row;
-
-  a {
-    text-decoration: none;
-    font-size: 16px;
-    color: #072ac8;
-    transition: 0.2s linear;
-
-    &:hover {
-      color: ${darken(0.1, '#072ac8')};
-    }
-  }
 `;
 
 export const Info = styled.div`
@@ -96,5 +84,9 @@ export const SignUpContainer = styled.div`
     height: 2px;
     width: 172px;
     background-color: #ffc600;
+  }
+
+  a {
+    margin-top: 0;
   }
 `;

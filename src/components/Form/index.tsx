@@ -1,21 +1,12 @@
-/* eslint-disable @typescript-eslint/ban-types */
-import React, { ReactNode } from 'react';
+import React from 'react';
+import { FormProps } from '@unform/core';
 
 import { Container, Unform } from './styles';
 
-interface FormProps {
-  children?: ReactNode;
-  submitFunction(data: Object): Promise<void>;
-}
-
-const Form: React.FC<FormProps> = ({ children, submitFunction }) => {
-  function handleSubmit(data: Object): void {
-    submitFunction(data);
-  }
-
+const Form: React.FC<FormProps> = ({ children, onSubmit }) => {
   return (
     <Container>
-      <Unform onSubmit={handleSubmit}>{children}</Unform>
+      <Unform onSubmit={onSubmit}>{children}</Unform>
     </Container>
   );
 };
