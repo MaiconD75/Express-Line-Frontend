@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { useAuth } from '../../hooks/AuthContext';
+
 import whiteLogoImg from '../../assets/png/whiteLogo.png';
 import whiteArrowImg from '../../assets/png/whiteArrow.png';
 import deliveryImg from '../../assets/png/delivery.png';
@@ -18,6 +20,12 @@ import {
 } from './styles';
 
 const SideBar: React.FC = () => {
+  const { logoff } = useAuth();
+
+  function handleLogoff() {
+    logoff();
+  }
+
   return (
     <Container>
       <LogoContainer>
@@ -44,7 +52,7 @@ const SideBar: React.FC = () => {
       </TabContainer>
 
       <ExitContainer>
-        <button type="button">
+        <button type="button" onClick={handleLogoff}>
           <img src={logoffImg} alt="" />
         </button>
       </ExitContainer>

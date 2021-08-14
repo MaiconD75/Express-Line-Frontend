@@ -9,10 +9,14 @@ import {
 import { useAuth } from '../hooks/AuthContext';
 
 interface RouteProps extends ReactRouteProps {
-  needAuth?: false;
+  needAuth?: boolean;
 }
 
-const Route: React.FC<RouteProps> = ({ children, needAuth, ...rest }) => {
+const Route: React.FC<RouteProps> = ({
+  children,
+  needAuth = false,
+  ...rest
+}) => {
   const { user } = useAuth();
   const history = useHistory();
 

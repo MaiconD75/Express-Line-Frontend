@@ -49,7 +49,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 
       setData({ token, user });
 
-      history.push('/');
+      history.push('/deliveries');
     },
     [history],
   );
@@ -59,7 +59,9 @@ export const AuthProvider: React.FC = ({ children }) => {
     localStorage.removeItem('@ExpressLine:user');
 
     setData({} as AuthState);
-  }, []);
+
+    history.push('/');
+  }, [history]);
 
   return (
     <AuthContext.Provider value={{ user: data.user, login, logoff }}>
