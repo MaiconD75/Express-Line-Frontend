@@ -4,7 +4,7 @@ import api from '../services/api';
 
 interface AuthState {
   token: string;
-  user: Record<string, string>;
+  data: Record<string, string>;
 }
 
 interface loginCredentials {
@@ -13,7 +13,7 @@ interface loginCredentials {
 }
 
 interface AuthContextData {
-  user: Record<string, string>;
+  user: AuthState;
   login(credetials: loginCredentials): Promise<void>;
   logoff(): void;
 }
@@ -29,7 +29,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     const user = localStorage.getItem('@ExpressLine:user');
 
     if (token && user) {
-      return { token, user: JSON.parse(user) };
+      return { token, data: JSON.parse(user) };
     }
 
     return {} as AuthState;
@@ -47,7 +47,7 @@ export const AuthProvider: React.FC = ({ children }) => {
       localStorage.setItem('@ExpressLine:token', token);
       localStorage.setItem('@ExpressLine:user', JSON.stringify(user));
 
-      setData({ token, user });
+      setData({ token, data: user });
 
       history.push('/deliveries');
     },
@@ -64,7 +64,7 @@ export const AuthProvider: React.FC = ({ children }) => {
   }, [history]);
 
   return (
-    <AuthContext.Provider value={{ user: data.user, login, logoff }}>
+    <AuthContext.Provider value={{ user: data, login, logoff }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+
+import { useDeliveries } from '../../hooks/DeliveriesContextx';
+import { FormatAddres } from '../../services/FormatAddres';
 
 import Button from '../../components/Button';
 import Form from '../../components/Form';
 import Input from '../../components/Input';
+import StatusTag from '../../components/StatusTag';
 import SideBar from '../../components/SideBar';
 
 import searchImg from '../../assets/png/search.png';
@@ -17,11 +21,17 @@ import {
   MainContainer,
   TitleContainer,
   ItemContainer,
-  Statuscontainer,
+  StatusContainer,
   ActionButton,
 } from './styles';
 
 const Deliveries: React.FC = () => {
+  const { getAllDeliveires, deliveries } = useDeliveries();
+
+  useEffect(() => {
+    getAllDeliveires();
+  }, [getAllDeliveires]);
+
   return (
     <Container>
       <SideBar />
@@ -46,9 +56,7 @@ const Deliveries: React.FC = () => {
               <th>
                 <canvas />
                 <select name="status" id="status">
-                  <option value="" selected>
-                    Status
-                  </option>
+                  <option value="none">Status</option>
                   <option value="delivered">Entregue</option>
                   <option value="forwarded">Encaminhado</option>
                   <option value="pending">Pendente</option>
@@ -56,27 +64,35 @@ const Deliveries: React.FC = () => {
                 </select>
               </th>
             </TitleContainer>
+            {deliveries.map(deliverie => {
+              return (
+                <ItemContainer>
+                  <td>{deliverie.product}</td>
+                  <td>{deliverie.deliveryman.name}</td>
+                  <td>{deliverie.recipient.name}</td>
+                  <td>
+                    <p>{FormatAddres(deliverie.origin)}</p>
+                  </td>
 
-            <ItemContainer>
-              <td>Nintendo Switch</td>
-              <td>Valdir Peixoto</td>
-              <td>Felipe Romoaldo</td>
-              <td>Rua Gerivaldo Golveia, 753, Mossoró-RN</td>
+                  <StatusContainer>
+                    <StatusTag deliverie={deliverie} />
 
-              <Statuscontainer>
-                <div>
-                  <canvas />
-                  <span>Encaminhado</span>
-                </div>
-
-                <ActionButton color="#ffc600" disabled>
-                  <img src={editImg} alt="Editar" />
-                </ActionButton>
-                <ActionButton color="#bd1111" disabled>
-                  <img src={trashImg} alt="Excluir" />
-                </ActionButton>
-              </Statuscontainer>
-            </ItemContainer>
+                    <ActionButton
+                      color="#ffc600"
+                      disabled={!!deliverie.start_date}
+                    >
+                      <img src={editImg} alt="Editar" />
+                    </ActionButton>
+                    <ActionButton
+                      color="#bd1111"
+                      disabled={!!deliverie.start_date}
+                    >
+                      <img src={trashImg} alt="Excluir" />
+                    </ActionButton>
+                  </StatusContainer>
+                </ItemContainer>
+              );
+            })}
           </table>
         </MainContainer>
       </PageContainer>

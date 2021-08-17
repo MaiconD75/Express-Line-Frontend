@@ -19,7 +19,7 @@ import {
   TabContainer,
   ExitContainer,
 } from './styles';
-import { useSideBar } from '../../hooks/SidebarContext';
+import { useSideBar } from '../../hooks/SideBarContext';
 
 const SideBar: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState('delivery');
