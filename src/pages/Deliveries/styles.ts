@@ -12,11 +12,11 @@ export const Container = styled.div`
   height: 100vh;
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
 `;
 
 export const PageContainer = styled.div`
-  width: 100%;
+  width: calc(100% - 128px);
+  margin-left: 128px;
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -76,7 +76,8 @@ export const MainContainer = styled.div`
     padding: 0 70px;
     overflow-y: scroll;
 
-    tr {
+    thead,
+    tbody {
       display: flex;
       flex-direction: row;
       padding: 0 36px;
@@ -94,20 +95,26 @@ export const MainContainer = styled.div`
       &:nth-child(4) {
         width: 28%;
       }
-    }
 
-    canvas {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      margin-left: 8px;
+      & > p {
+        width: 95%;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+      }
 
-      background-color: #ffc600;
+      & > canvas {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-left: 8px;
+
+        background-color: #ffc600;
+      }
     }
   }
 `;
 
-export const TitleContainer = styled.tr`
+export const TitleContainer = styled.thead`
   height: 40px;
   padding-bottom: auto;
   border-bottom: 2px solid #eee;
@@ -127,7 +134,7 @@ export const TitleContainer = styled.tr`
   }
 `;
 
-export const ItemContainer = styled.tr`
+export const ItemContainer = styled.tbody`
   height: 72px;
   width: 100%;
 
@@ -144,32 +151,9 @@ export const ItemContainer = styled.tr`
   }
 `;
 
-export const Statuscontainer = styled.td`
+export const StatusContainer = styled.td`
   display: flex;
   align-items: center;
-
-  div {
-    width: 55%;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    background-color: #fef977;
-    border-radius: 16px;
-
-    canvas {
-      margin-left: 8px;
-    }
-
-    span {
-      font-size: 14px;
-      font-weight: 600;
-      color: #ffc600;
-      overflow: hidden;
-      text-overflow: ellipsis;
-
-      margin: 0 auto;
-    }
-  }
 `;
 
 export const ActionButton = styled.button<ActionButtonProps>`

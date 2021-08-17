@@ -1,11 +1,14 @@
 import React from 'react';
 import { AuthProvider } from './AuthContext';
-import { SideBarProvider } from './SidebarContext';
+import { DeliveriesProvider } from './DeliveriesContextx';
+import { SideBarProvider } from './SideBarContext';
 
 const AppProvider: React.FC = ({ children }) => {
   return (
     <AuthProvider>
-      <SideBarProvider>{children}</SideBarProvider>
+      <DeliveriesProvider>
+        <SideBarProvider>{children}</SideBarProvider>
+      </DeliveriesProvider>
     </AuthProvider>
   );
 };

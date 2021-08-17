@@ -148,13 +148,14 @@ export const Container = styled.div<ContainerProps>`
   height: 100vh;
   width: 128px;
 
+  z-index: 100;
+  position: absolute;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
   padding: 0 8px;
-
-  position: relative;
 
   background-color: #072ac8;
 

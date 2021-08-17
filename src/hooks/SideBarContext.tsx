@@ -1,15 +1,5 @@
 import React, { createContext, useCallback, useState, useContext } from 'react';
 
-interface SideBarState {
-  token: string;
-  user: Record<string, string>;
-}
-
-interface loginCredentials {
-  email: string;
-  password: string;
-}
-
 interface SideBarContextData {
   isExtended: boolean;
   toggleSideBarState(): void;
