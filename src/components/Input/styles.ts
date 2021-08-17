@@ -10,7 +10,7 @@ export const Container = styled.div`
 
 export const InputContainer = styled.div`
   width: 100%;
-  height: 64px;
+  height: 48px;
   margin: 12px 0 0;
 
   background: #fefefe;
@@ -25,7 +25,7 @@ export const InputContainer = styled.div`
   &:focus-within:after {
     content: '';
     width: 100%;
-    height: 64px;
+    height: 48px;
     position: absolute;
     top: -2px;
     left: -2px;
@@ -40,7 +40,7 @@ export const InputContainer = styled.div`
     background-color: transparent;
     height: 100%;
     width: 100%;
-    padding-left: 24px;
+    padding: 0 24px;
     outline: none;
     font: 20px 'Roboto', sans-serif;
     color: #333;
@@ -53,16 +53,17 @@ export const InputContainer = styled.div`
 
 export const IconContainer = styled.div`
   height: calc(100% - 16px);
-  width: 64px;
+  width: 48px;
   border-right: 2px solid #ccc;
   padding: auto;
 
   display: flex;
   justify-content: center;
+  align-items: center;
 
   img {
     object-fit: contain;
-    max-width: 30%;
+    max-width: 40%;
     height: auto;
   }
 `;
