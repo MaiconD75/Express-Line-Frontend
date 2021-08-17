@@ -3,9 +3,9 @@ import React, { InputHTMLAttributes, useEffect, useRef } from 'react';
 import { Container, InputContainer, IconContainer } from './styles';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  icon: string;
+  icon?: string;
   name: string;
-  label: string;
+  label?: string;
 }
 
 const Input: React.FC<InputProps> = ({ icon, name, label, ...rest }) => {
@@ -22,12 +22,14 @@ const Input: React.FC<InputProps> = ({ icon, name, label, ...rest }) => {
 
   return (
     <Container>
-      <p>{label}</p>
+      {label && <p>{label}</p>}
       {error && <p>error</p>}
       <InputContainer>
-        <IconContainer>
-          <img src={icon} alt={label} />
-        </IconContainer>
+        {icon && (
+          <IconContainer>
+            <img src={icon} alt={label} />
+          </IconContainer>
+        )}
         <input defaultValue={defaultValue} {...rest} ref={inputRef} />
       </InputContainer>
     </Container>
