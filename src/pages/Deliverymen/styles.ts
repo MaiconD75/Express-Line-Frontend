@@ -6,6 +6,10 @@ interface ActionButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   color: string;
 }
 
+function getRandomInt(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
 export const Container = styled.div`
   width: 100vw;
   height: 100vh;
@@ -36,15 +40,48 @@ export const MainContainer = styled.div`
   width: 100%;
   height: 100%;
 
-  th:nth-child(4),
-  td:nth-child(4) {
-    min-width: 400px;
+  th:nth-child(1),
+  td:nth-child(1) {
+    max-width: 72px;
+    margin-left: -20px;
+  }
+
+  th:nth-child(6),
+  td:nth-child(6) {
+    max-width: 128px;
   }
 `;
 
-export const StatusContainer = styled.td`
-  display: flex;
-  align-items: center;
+export const ImageContainer = styled.div`
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: #e9e9e9;
+  box-sizing: content-box;
+
+  p {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font: 500 32px Poppins, sans-serif;
+
+    color: rgb(
+      ${getRandomInt(0, 255)},
+      ${getRandomInt(0, 255)},
+      ${getRandomInt(0, 255)}
+    );
+  }
+
+  img {
+    object-fit: cover;
+    height: 56px;
+    border-radius: 50%;
+  }
 `;
 
 export const ActionButton = styled.button<ActionButtonProps>`

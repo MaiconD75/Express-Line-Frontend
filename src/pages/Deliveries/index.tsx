@@ -4,12 +4,13 @@ import { useDeliveries } from '../../hooks/DeliveriesContextx';
 import { FormatAddres } from '../../services/FormatAddres';
 
 import Button from '../../components/Button';
-import Form from '../../components/Form';
-import Input from '../../components/Input';
-import StatusTag from '../../components/StatusTag';
+import SearchBar from '../../components/SearchBar';
 import SideBar from '../../components/SideBar';
+import StatusTag from '../../components/StatusTag';
+import Table from '../../components/Table';
+import TableHead from '../../components/Table/TableHead';
+import TableItem from '../../components/Table/TableItem';
 
-import searchImg from '../../assets/png/search.png';
 import editImg from '../../assets/png/edit.png';
 import trashImg from '../../assets/png/trash.png';
 
@@ -17,10 +18,7 @@ import {
   Container,
   PageContainer,
   HeadContainer,
-  SearchButton,
   MainContainer,
-  TitleContainer,
-  ItemContainer,
   StatusContainer,
   ActionButton,
 } from './styles';
@@ -38,17 +36,12 @@ const Deliveries: React.FC = () => {
       <PageContainer>
         <HeadContainer>
           <Button style={{ width: '16vw' }}>Adicionar entrega</Button>
-          <Form onSubmit={() => alert('pesquisando')}>
-            <Input name="searchContent" placeholder="Buscar entrega..." />
-            <SearchButton type="submit">
-              <img src={searchImg} alt="Buscar" />
-            </SearchButton>
-          </Form>
+          <SearchBar />
         </HeadContainer>
 
         <MainContainer>
-          <table>
-            <TitleContainer>
+          <Table>
+            <TableHead>
               <th>Produto</th>
               <th>Entregador</th>
               <th>Destinatário</th>
@@ -63,10 +56,10 @@ const Deliveries: React.FC = () => {
                   <option value="canceled">Cancelado</option>
                 </select>
               </th>
-            </TitleContainer>
+            </TableHead>
             {deliveries.map(deliverie => {
               return (
-                <ItemContainer>
+                <TableItem>
                   <td>{deliverie.product}</td>
                   <td>{deliverie.deliveryman.name}</td>
                   <td>{deliverie.recipient.name}</td>
@@ -90,10 +83,10 @@ const Deliveries: React.FC = () => {
                       <img src={trashImg} alt="Excluir" />
                     </ActionButton>
                   </StatusContainer>
-                </ItemContainer>
+                </TableItem>
               );
             })}
-          </table>
+          </Table>
         </MainContainer>
       </PageContainer>
     </Container>

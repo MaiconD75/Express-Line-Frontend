@@ -10,5 +10,5 @@ interface Address {
 }
 
 export const FormatAddres = (address: Address): string => {
-  return `Rua ${address.street}, ${address.number}, ${address.city}-${address.state}`;
+  return `${address.street}, ${address.number}, ${address.city}-${address.state}`;
 };

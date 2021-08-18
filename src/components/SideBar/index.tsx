@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import { useHistory } from 'react-router-dom';
 import { useAuth } from '../../hooks/AuthContext';
 
 import whiteLogoImg from '../../assets/png/whiteLogo.png';
@@ -11,6 +12,8 @@ import recipientImg from '../../assets/png/recipient.png';
 import stockImg from '../../assets/png/stock.png';
 import logoffImg from '../../assets/png/logoff.png';
 
+import { useSideBar } from '../../hooks/SideBarContext';
+
 import {
   Container,
   LogoContainer,
@@ -19,12 +22,13 @@ import {
   TabContainer,
   ExitContainer,
 } from './styles';
-import { useSideBar } from '../../hooks/SideBarContext';
 
 const SideBar: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState('delivery');
   const { toggleSideBarState, isExtended } = useSideBar();
   const { logoff } = useAuth();
+
+  const history = useHistory();
 
   function handleLogoff() {
     logoff();
@@ -32,6 +36,8 @@ const SideBar: React.FC = () => {
 
   function handleSelectTab(page: string, selectedButton: string) {
     setSelectedTab(selectedButton);
+
+    history.push(`/${page}`);
   }
 
   function handleToggleSideBarState() {
