@@ -1,13 +1,19 @@
-import { darken, lighten } from 'polished';
+import {
+  darken,
+  lighten,
+  desaturate,
+  transparentize,
+  saturate,
+} from 'polished';
 import { ButtonHTMLAttributes } from 'react';
 import styled from 'styled-components';
 
-interface ActionButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  color: string;
+interface ImageContainerProps {
+  nameColor: string;
 }
 
-function getRandomInt(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min)) + min;
+interface ActionButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  color: string;
 }
 
 export const Container = styled.div`
@@ -52,12 +58,19 @@ export const MainContainer = styled.div`
   }
 `;
 
-export const ImageContainer = styled.div`
+export const ImageContainer = styled.div<ImageContainerProps>`
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background-color: #e9e9e9;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   box-sizing: content-box;
+
+  background-color: ${props =>
+    transparentize(0.8, saturate(0.5, desaturate(0.5, props.nameColor)))};
 
   p {
     width: 56px;
@@ -68,17 +81,17 @@ export const ImageContainer = styled.div`
     justify-content: center;
     align-items: center;
 
-    font: 500 32px Poppins, sans-serif;
+    text-align: center;
+    text-justify: center;
 
-    color: rgb(
-      ${getRandomInt(0, 255)},
-      ${getRandomInt(0, 255)},
-      ${getRandomInt(0, 255)}
-    );
+    font: 400 32px Poppins, sans-serif;
+
+    color: ${props => props.nameColor};
   }
 
   img {
     object-fit: cover;
+    width: 56px;
     height: 56px;
     border-radius: 50%;
   }
