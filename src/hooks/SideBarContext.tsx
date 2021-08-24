@@ -32,7 +32,7 @@ export function useSideBar(): SideBarContextData {
   const context = useContext(SideBarContext);
 
   if (!context) {
-    throw new Error('UseSideBar must be used within and= SideBarProvider');
+    throw new Error('UseSideBar must be used within an SideBarProvider');
   }
 
   return context;

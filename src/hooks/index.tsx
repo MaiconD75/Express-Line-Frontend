@@ -3,6 +3,7 @@ import { AuthProvider } from './AuthContext';
 import { DeliveriesProvider } from './DeliveriesContextx';
 import { DeliverymenProvider } from './DeliverymenContextx';
 import { OriginsProvider } from './OriginsContextx';
+import { RecipientsProvider } from './RecipientContextx';
 import { SideBarProvider } from './SideBarContext';
 
 const AppProvider: React.FC = ({ children }) => {
@@ -11,7 +12,9 @@ const AppProvider: React.FC = ({ children }) => {
       <DeliveriesProvider>
         <DeliverymenProvider>
           <OriginsProvider>
-            <SideBarProvider>{children}</SideBarProvider>
+            <RecipientsProvider>
+              <SideBarProvider>{children}</SideBarProvider>
+            </RecipientsProvider>
           </OriginsProvider>
         </DeliverymenProvider>
       </DeliveriesProvider>

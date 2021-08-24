@@ -5,17 +5,7 @@ import api from '../services/api';
 import { useAuth } from './AuthContext';
 import { DeliverymanData } from './DeliverymenContextx';
 import { OriginData } from './OriginsContextx';
-
-interface RecipientData {
-  id: string;
-  name: string;
-  city: string;
-  complement: string;
-  number: number;
-  state: string;
-  street: string;
-  zip_code: string;
-}
+import { RecipientData } from './RecipientContextx';
 
 export interface DeliveryData {
   id: string;
@@ -61,9 +51,7 @@ export function useDeliveries(): DeliveriesContextData {
   const context = useContext(DeliveriesContext);
 
   if (!context) {
-    throw new Error(
-      'UseDeliveries must be used within and= DeliveriesProvider',
-    );
+    throw new Error('UseDeliveries must be used within an DeliveriesProvider');
   }
 
   return context;

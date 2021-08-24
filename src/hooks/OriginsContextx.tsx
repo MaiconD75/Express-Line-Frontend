@@ -44,7 +44,7 @@ export function useOrigins(): OriginsContextData {
   const context = useContext(OriginsContext);
 
   if (!context) {
-    throw new Error('Use Origins must be used within an OriginsProvider');
+    throw new Error('UseOrigins must be used within an OriginsProvider');
   }
 
   return context;

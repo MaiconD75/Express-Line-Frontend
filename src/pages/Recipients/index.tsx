@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+
+import { useRecipients } from '../../hooks/RecipientContextx';
 
 import ActionButton from '../../components/ActionButton';
 import Button from '../../components/Button';
@@ -19,6 +21,12 @@ import {
 } from './styles';
 
 const Recipients: React.FC = () => {
+  const { getAllRecipients, recipients } = useRecipients();
+
+  useEffect(() => {
+    getAllRecipients();
+  }, [getAllRecipients]);
+
   return (
     <Container>
       <SideBar selectedTab="recipient" />
@@ -46,29 +54,33 @@ const Recipients: React.FC = () => {
               </th>
               <th aria-label="buttons" />
             </TableHead>
-            <TableItem>
-              <td>Fulano Sicrano</td>
-              <td>Rua Brigadeiro Fulano</td>
-              <td>Mossoró</td>
-              <td>
-                <p>RN</p>
-              </td>
-              <td>
-                <p>753</p>
-              </td>
-              <td>Torre: 01</td>
-              <td>
-                <p>12345-678</p>
-              </td>
-              <td>
-                <ActionButton color="#ffc600">
-                  <img src={editImg} alt="Editar" />
-                </ActionButton>
-                <ActionButton color="#bd1111">
-                  <img src={trashImg} alt="Excluir" />
-                </ActionButton>
-              </td>
-            </TableItem>
+            {recipients.map(recipient => {
+              return (
+                <TableItem>
+                  <td>{recipient.name}</td>
+                  <td>{recipient.street}</td>
+                  <td>{recipient.city}</td>
+                  <td>
+                    <p>{recipient.state}</p>
+                  </td>
+                  <td>
+                    <p>{recipient.number}</p>
+                  </td>
+                  <td>{recipient.complement || 'Sem complemento'}</td>
+                  <td>
+                    <p>{recipient.zip_code}</p>
+                  </td>
+                  <td>
+                    <ActionButton color="#ffc600">
+                      <img src={editImg} alt="Editar" />
+                    </ActionButton>
+                    <ActionButton color="#bd1111">
+                      <img src={trashImg} alt="Excluir" />
+                    </ActionButton>
+                  </td>
+                </TableItem>
+              );
+            })}
           </Table>
         </MainContainer>
       </PageContainer>
