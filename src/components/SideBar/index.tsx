@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { useHistory } from 'react-router-dom';
 import { useAuth } from '../../hooks/AuthContext';
@@ -23,9 +23,13 @@ import {
   ExitContainer,
 } from './styles';
 
-const SideBar: React.FC = () => {
-  const [selectedTab, setSelectedTab] = useState('delivery');
+interface SideBarProps {
+  selectedTab: string;
+}
+
+const SideBar: React.FC<SideBarProps> = ({ selectedTab }) => {
   const { toggleSideBarState, isExtended } = useSideBar();
+
   const { logoff } = useAuth();
 
   const history = useHistory();
@@ -34,9 +38,7 @@ const SideBar: React.FC = () => {
     logoff();
   }
 
-  function handleSelectTab(page: string, selectedButton: string) {
-    setSelectedTab(selectedButton);
-
+  function handleSelectTab(page: string) {
     history.push(`/${page}`);
   }
 
@@ -61,7 +63,7 @@ const SideBar: React.FC = () => {
         <TabButton
           isSelected={selectedTab === 'delivery'}
           disabled={selectedTab === 'delivery'}
-          onClick={() => handleSelectTab('Deliveries', 'delivery')}
+          onClick={() => handleSelectTab('Deliveries')}
         >
           <img src={deliveryImg} alt="Entregas" />
           {isExtended && <p>Entregas</p>}
@@ -69,7 +71,7 @@ const SideBar: React.FC = () => {
         <TabButton
           isSelected={selectedTab === 'deliveryman'}
           disabled={selectedTab === 'deliveryman'}
-          onClick={() => handleSelectTab('Deliverymen', 'deliveryman')}
+          onClick={() => handleSelectTab('Deliverymen')}
         >
           <img src={deliverymanImg} alt="Entregadores" />
           {isExtended && <p>Entregadores</p>}
@@ -77,7 +79,7 @@ const SideBar: React.FC = () => {
         <TabButton
           isSelected={selectedTab === 'stock'}
           disabled={selectedTab === 'stock'}
-          onClick={() => handleSelectTab('Origins', 'stock')}
+          onClick={() => handleSelectTab('Origins')}
         >
           <img src={stockImg} alt="Estoques" />
           {isExtended && <p>Estoques</p>}
@@ -85,7 +87,7 @@ const SideBar: React.FC = () => {
         <TabButton
           isSelected={selectedTab === 'recipient'}
           disabled={selectedTab === 'recipient'}
-          onClick={() => handleSelectTab('Recipients', 'recipient')}
+          onClick={() => handleSelectTab('Recipients')}
         >
           <img src={recipientImg} alt="Destinatários" />
           {isExtended && <p>Destinatários</p>}

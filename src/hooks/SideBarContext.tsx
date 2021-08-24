@@ -18,7 +18,10 @@ export const SideBarProvider: React.FC = ({ children }) => {
 
   return (
     <SideBarContext.Provider
-      value={{ isExtended: sideBarState, toggleSideBarState }}
+      value={{
+        isExtended: sideBarState,
+        toggleSideBarState,
+      }}
     >
       {children}
     </SideBarContext.Provider>

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { DeliveriesData } from '../../hooks/DeliveriesContextx';
+import { DeliveryData } from '../../hooks/DeliveriesContextx';
 
 import { Container } from './styles';
 
 interface StatusTagprops {
-  deliverie: DeliveriesData;
+  delivery: DeliveryData;
 }
 
 enum Status {
@@ -14,26 +14,26 @@ enum Status {
   Canceled = 'Cancelado',
 }
 
-const StatusTag: React.FC<StatusTagprops> = ({ deliverie }) => {
+const StatusTag: React.FC<StatusTagprops> = ({ delivery }) => {
   const [status, setStatus] = useState<Status>(Status.Pending);
 
   useEffect(() => {
     setStatus(() => {
-      if (deliverie.end_date) {
+      if (delivery.end_date) {
         return Status.Delivered;
       }
 
-      if (deliverie.canceled_at) {
+      if (delivery.canceled_at) {
         return Status.Canceled;
       }
 
-      if (deliverie.start_date) {
+      if (delivery.start_date) {
         return Status.Forwarded;
       }
 
       return Status.Pending;
     });
-  }, [deliverie]);
+  }, [delivery]);
 
   return (
     <Container status={status}>
