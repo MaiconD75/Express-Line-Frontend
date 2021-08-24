@@ -1,6 +1,10 @@
 import { ButtonHTMLAttributes } from 'react';
 import styled from 'styled-components';
 
+interface ImageContainerProps {
+  nameColor: string;
+}
+
 interface ActionButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   color: string;
 }
@@ -35,13 +39,18 @@ export const MainContainer = styled.div`
   width: 100%;
   height: 100%;
 
-  th:nth-child(4),
-  td:nth-child(4) {
-    min-width: 400px;
+  th:nth-child(2),
+  td:nth-child(2) {
+    min-width: 256px;
   }
-`;
 
-export const StatusContainer = styled.td`
-  display: flex;
-  align-items: center;
+  th:nth-child(3),
+  td:nth-child(3) {
+    min-width: 256px;
+  }
+
+  th:nth-child(6),
+  td:nth-child(6) {
+    min-width: 256px;
+  }
 `;

@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 
+import getInitials from '../../services/getInitials';
 import { useDeliverymen } from '../../hooks/DeliverymenContextx';
 import { getFilesUrl } from '../../services/getFilesUrl';
 
+import ActionButton from '../../components/ActionButton';
 import Button from '../../components/Button';
 import SearchBar from '../../components/SearchBar';
 import SideBar from '../../components/SideBar';
@@ -19,9 +21,7 @@ import {
   HeadContainer,
   MainContainer,
   ImageContainer,
-  ActionButton,
 } from './styles';
-import getInitials from '../../services/getInitials';
 
 const Deliverymen: React.FC = () => {
   const { getAllDeliverymen, deliverymen } = useDeliverymen();

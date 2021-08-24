@@ -1,19 +1,8 @@
-import {
-  darken,
-  lighten,
-  desaturate,
-  transparentize,
-  saturate,
-} from 'polished';
-import { ButtonHTMLAttributes } from 'react';
+import { desaturate, transparentize, saturate } from 'polished';
 import styled from 'styled-components';
 
 interface ImageContainerProps {
   nameColor: string;
-}
-
-interface ActionButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  color: string;
 }
 
 export const Container = styled.div`
@@ -94,37 +83,5 @@ export const ImageContainer = styled.div<ImageContainerProps>`
     width: 56px;
     height: 56px;
     border-radius: 50%;
-  }
-`;
-
-export const ActionButton = styled.button<ActionButtonProps>`
-  width: 48px;
-  height: 48px;
-
-  border-radius: 8px;
-  border: none;
-
-  margin: 0 auto;
-  background-color: ${props => props.color};
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  cursor: pointer;
-  transition: 0.2s linear;
-
-  img {
-    height: 24px;
-    object-fit: content;
-  }
-
-  &:hover {
-    background-color: ${props => darken(0.06, props.color)};
-  }
-
-  &:disabled {
-    background-color: ${props => lighten(0.36, props.color)};
-    cursor: default;
   }
 `;

@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { useDeliveries } from '../../hooks/DeliveriesContextx';
 import FormatAddres from '../../services/FormatAddres';
 
+import ActionButton from '../../components/ActionButton';
 import Button from '../../components/Button';
 import SearchBar from '../../components/SearchBar';
 import SideBar from '../../components/SideBar';
@@ -20,7 +21,6 @@ import {
   HeadContainer,
   MainContainer,
   StatusContainer,
-  ActionButton,
 } from './styles';
 
 const Deliveries: React.FC = () => {
