@@ -77,8 +77,8 @@ const SideBar: React.FC<SideBarProps> = ({ selectedTab }) => {
           {isExtended && <p>Entregadores</p>}
         </TabButton>
         <TabButton
-          isSelected={selectedTab === 'stock'}
-          disabled={selectedTab === 'stock'}
+          isSelected={selectedTab === 'origin'}
+          disabled={selectedTab === 'origin'}
           onClick={() => handleSelectTab('Origins')}
         >
           <img src={stockImg} alt="Estoques" />

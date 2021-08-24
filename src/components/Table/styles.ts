@@ -38,4 +38,13 @@ export const Container = styled.table`
       background-color: #ffc600;
     }
   }
+
+  th:last-child,
+  td:last-child {
+    display: flex;
+    flex-direction: row;
+
+    justify-content: flex-end;
+    align-items: center;
+  }
 `;
