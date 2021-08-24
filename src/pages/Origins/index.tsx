@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+
+import { useOrigins } from '../../hooks/OriginsContextx';
 
 import ActionButton from '../../components/ActionButton';
 import Button from '../../components/Button';
@@ -19,6 +21,12 @@ import {
 } from './styles';
 
 const Origins: React.FC = () => {
+  const { getAllOrigins, origins } = useOrigins();
+
+  useEffect(() => {
+    getAllOrigins();
+  }, [getAllOrigins]);
+
   return (
     <Container>
       <SideBar selectedTab="origin" />
@@ -45,28 +53,32 @@ const Origins: React.FC = () => {
               </th>
               <th aria-label="buttons" />
             </TableHead>
-            <TableItem>
-              <td>Rua Brigadeiro Fulano</td>
-              <td>Mossoró</td>
-              <td>
-                <p>RN</p>
-              </td>
-              <td>
-                <p>753</p>
-              </td>
-              <td>Torre: 01</td>
-              <td>
-                <p>12345-678</p>
-              </td>
-              <td>
-                <ActionButton color="#ffc600">
-                  <img src={editImg} alt="Editar" />
-                </ActionButton>
-                <ActionButton color="#bd1111">
-                  <img src={trashImg} alt="Excluir" />
-                </ActionButton>
-              </td>
-            </TableItem>
+            {origins.map(origin => {
+              return (
+                <TableItem>
+                  <td>{origin.street}</td>
+                  <td>{origin.city}</td>
+                  <td>
+                    <p>{origin.state}</p>
+                  </td>
+                  <td>
+                    <p>{origin.number}</p>
+                  </td>
+                  <td>{origin.complement}</td>
+                  <td>
+                    <p>{origin.zip_code}</p>
+                  </td>
+                  <td>
+                    <ActionButton color="#ffc600">
+                      <img src={editImg} alt="Editar" />
+                    </ActionButton>
+                    <ActionButton color="#bd1111">
+                      <img src={trashImg} alt="Excluir" />
+                    </ActionButton>
+                  </td>
+                </TableItem>
+              );
+            })}
           </Table>
         </MainContainer>
       </PageContainer>
