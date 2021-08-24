@@ -1,15 +1,11 @@
 import React, { createContext, useCallback, useState, useContext } from 'react';
+
 import api from '../services/api';
+
 import { useAuth } from './AuthContext';
+import { DeliverymanData } from './DeliverymenContextx';
 
-interface DeliverymenData {
-  avatar: string;
-  name: string;
-  email: string;
-  id: string;
-}
-
-interface OriginsData {
+interface OriginData {
   id: string;
   city: string;
   complement: string;
@@ -19,7 +15,7 @@ interface OriginsData {
   zip_code: string;
 }
 
-interface RecipientsData {
+interface RecipientData {
   id: string;
   name: string;
   city: string;
@@ -30,21 +26,21 @@ interface RecipientsData {
   zip_code: string;
 }
 
-export interface DeliveriesData {
+export interface DeliveryData {
   id: string;
   product: string;
   signature: string;
   start_date: string;
   end_date: string;
   canceled_at: string;
-  deliveryman: DeliverymenData;
-  recipient: RecipientsData;
-  origin: OriginsData;
+  deliveryman: DeliverymanData;
+  recipient: RecipientData;
+  origin: OriginData;
 }
 
 interface DeliveriesContextData {
-  deliveries: DeliveriesData[];
-  getAllDeliveires(): Promise<void>;
+  deliveries: DeliveryData[];
+  getAllDeliveries(): Promise<void>;
 }
 
 export const DeliveriesContext = createContext<DeliveriesContextData>(
@@ -52,10 +48,10 @@ export const DeliveriesContext = createContext<DeliveriesContextData>(
 );
 
 export const DeliveriesProvider: React.FC = ({ children }) => {
-  const [deliveries, setDeliveries] = useState([] as DeliveriesData[]);
+  const [deliveries, setDeliveries] = useState([] as DeliveryData[]);
   const { user } = useAuth();
 
-  const getAllDeliveires = useCallback(async () => {
+  const getAllDeliveries = useCallback(async () => {
     const response = await api.get('/deliveries', {
       headers: { Authorization: `Bearer ${user.token}` },
     });
@@ -64,7 +60,7 @@ export const DeliveriesProvider: React.FC = ({ children }) => {
   }, [setDeliveries, user.token]);
 
   return (
-    <DeliveriesContext.Provider value={{ getAllDeliveires, deliveries }}>
+    <DeliveriesContext.Provider value={{ getAllDeliveries, deliveries }}>
       {children}
     </DeliveriesContext.Provider>
   );

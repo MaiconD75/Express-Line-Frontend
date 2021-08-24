@@ -1,8 +1,14 @@
 import styled from 'styled-components';
 
-export const Container = styled.thead`
+export const Container = styled.tbody`
   height: 72px;
   width: 100%;
+
+  tr {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+  }
 
   background-color: #fefefe;
   display: flex;

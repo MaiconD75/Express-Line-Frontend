@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 import { useDeliveries } from '../../hooks/DeliveriesContextx';
-import { FormatAddres } from '../../services/FormatAddres';
+import FormatAddres from '../../services/FormatAddres';
 
 import Button from '../../components/Button';
 import SearchBar from '../../components/SearchBar';
@@ -24,15 +24,15 @@ import {
 } from './styles';
 
 const Deliveries: React.FC = () => {
-  const { getAllDeliveires, deliveries } = useDeliveries();
+  const { getAllDeliveries, deliveries } = useDeliveries();
 
   useEffect(() => {
-    getAllDeliveires();
-  }, [getAllDeliveires]);
+    getAllDeliveries();
+  }, [getAllDeliveries]);
 
   return (
     <Container>
-      <SideBar />
+      <SideBar selectedTab="delivery" />
       <PageContainer>
         <HeadContainer>
           <Button style={{ width: '16vw' }}>Adicionar entrega</Button>
@@ -57,28 +57,28 @@ const Deliveries: React.FC = () => {
                 </select>
               </th>
             </TableHead>
-            {deliveries.map(deliverie => {
+            {deliveries.map(delivery => {
               return (
-                <TableItem>
-                  <td>{deliverie.product}</td>
-                  <td>{deliverie.deliveryman.name}</td>
-                  <td>{deliverie.recipient.name}</td>
+                <TableItem key={delivery.id}>
+                  <td>{delivery.product}</td>
+                  <td>{delivery.deliveryman.name}</td>
+                  <td>{delivery.recipient.name}</td>
                   <td>
-                    <p>{FormatAddres(deliverie.origin)}</p>
+                    <p>{FormatAddres(delivery.origin)}</p>
                   </td>
 
                   <StatusContainer>
-                    <StatusTag deliverie={deliverie} />
+                    <StatusTag delivery={delivery} />
 
                     <ActionButton
                       color="#ffc600"
-                      disabled={!!deliverie.start_date}
+                      disabled={!!delivery.start_date}
                     >
                       <img src={editImg} alt="Editar" />
                     </ActionButton>
                     <ActionButton
                       color="#bd1111"
-                      disabled={!!deliverie.start_date}
+                      disabled={!!delivery.start_date}
                     >
                       <img src={trashImg} alt="Excluir" />
                     </ActionButton>
