@@ -4,16 +4,7 @@ import api from '../services/api';
 
 import { useAuth } from './AuthContext';
 import { DeliverymanData } from './DeliverymenContextx';
-
-interface OriginData {
-  id: string;
-  city: string;
-  complement: string;
-  number: number;
-  state: string;
-  street: string;
-  zip_code: string;
-}
+import { OriginData } from './OriginsContextx';
 
 interface RecipientData {
   id: string;
