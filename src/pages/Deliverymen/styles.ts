@@ -1,5 +1,6 @@
 import { desaturate, transparentize, saturate } from 'polished';
 import styled from 'styled-components';
+import Input from '../../components/Input';
 
 interface ImageContainerProps {
   nameColor: string;
@@ -83,5 +84,37 @@ export const ImageContainer = styled.div<ImageContainerProps>`
     width: 56px;
     height: 56px;
     border-radius: 50%;
+  }
+`;
+
+export const AddImageButton = styled.button`
+  width: 256px;
+  height: 256px;
+  border-radius: 50%;
+  border: none;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  overflow: hidden;
+
+  img {
+    margin: auto;
+  }
+
+  p {
+    height: 64px;
+    width: 100%;
+
+    padding: 0 64px;
+
+    text-align: center;
+
+    color: #fefefe;
+    font-size: 20px;
+    word-wrap: break-word;
+
+    background-color: #072ac8;
   }
 `;
