@@ -44,7 +44,7 @@ const Deliverymen: React.FC = () => {
         <div>
           <h1>Contratando...</h1>
           <Form onSubmit={() => alert('adicionado')}>
-            <AddImageButton type="image">
+            <AddImageButton>
               <img src={userImg} alt="Adicionar foto" />
               <p>Adcionar foto</p>
             </AddImageButton>
