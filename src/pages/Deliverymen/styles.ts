@@ -1,6 +1,5 @@
-import { desaturate, transparentize, saturate } from 'polished';
+import { desaturate, transparentize, saturate, darken } from 'polished';
 import styled from 'styled-components';
-import Input from '../../components/Input';
 
 interface ImageContainerProps {
   nameColor: string;
@@ -87,11 +86,12 @@ export const ImageContainer = styled.div<ImageContainerProps>`
   }
 `;
 
-export const AddImageButton = styled.button`
+export const AvatarContainer = styled.label`
   width: 256px;
   height: 256px;
   border-radius: 50%;
   border: none;
+  background-color: #eeeeee;
 
   display: flex;
   flex-direction: column;
@@ -99,8 +99,12 @@ export const AddImageButton = styled.button`
   align-items: center;
   overflow: hidden;
 
+  transition: 0.2s linear;
+
   img {
     margin: auto;
+
+    transition: 0.2s linear;
   }
 
   p {
@@ -116,5 +120,25 @@ export const AddImageButton = styled.button`
     word-wrap: break-word;
 
     background-color: #072ac8;
+
+    transition: 0.2s linear;
+  }
+
+  input {
+    display: none;
+  }
+
+  &:hover {
+    cursor: pointer;
+
+    background-color: ${darken(0.1, '#eeeeee')};
+
+    p {
+      background-color: ${darken(0.1, '#072ac8')};
+    }
+
+    img {
+      opacity: 60%;
+    }
   }
 `;

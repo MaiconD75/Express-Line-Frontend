@@ -1,5 +1,5 @@
 import React from 'react';
-import { useModal } from '../../hooks/ModalContext';
+import { useFormModal } from '../../hooks/FormModalContext';
 import Button from '../Button';
 
 import { Container, MainContainer, ButtonContainer } from './styles';
@@ -9,18 +9,24 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ confirmButtonTag, children }) => {
-  const { toggleModalState, isClosed } = useModal();
+  const { toggleModalState, isClosed } = useFormModal();
 
   return (
     <Container isClosed={isClosed}>
-      <MainContainer>
-        {children}
+      {isClosed ? (
+        <></>
+      ) : (
+        <MainContainer>
+          {children}
 
-        <ButtonContainer>
-          <Button onClick={toggleModalState}>Cancelar</Button>
-          <Button type="submit">{confirmButtonTag}</Button>
-        </ButtonContainer>
-      </MainContainer>
+          <ButtonContainer>
+            <Button onClick={() => toggleModalState({})}>Cancelar</Button>
+            <Button type="submit" form="hook-form">
+              {confirmButtonTag}
+            </Button>
+          </ButtonContainer>
+        </MainContainer>
+      )}
     </Container>
   );
 };
