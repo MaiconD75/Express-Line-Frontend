@@ -5,7 +5,7 @@ import { DeliverymenProvider } from './DeliverymenContextx';
 import { OriginsProvider } from './OriginsContextx';
 import { RecipientsProvider } from './RecipientContextx';
 import { SideBarProvider } from './SideBarContext';
-import { ModalProvider } from './ModalContext';
+import { FormModalProvider } from './FormModalContext';
 
 const AppProvider: React.FC = ({ children }) => {
   return (
@@ -14,9 +14,9 @@ const AppProvider: React.FC = ({ children }) => {
         <DeliverymenProvider>
           <OriginsProvider>
             <RecipientsProvider>
-              <ModalProvider>
+              <FormModalProvider>
                 <SideBarProvider>{children}</SideBarProvider>
-              </ModalProvider>
+              </FormModalProvider>
             </RecipientsProvider>
           </OriginsProvider>
         </DeliverymenProvider>

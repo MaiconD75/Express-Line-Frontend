@@ -1,12 +1,17 @@
 import React, { useEffect } from 'react';
 
 import getInitials from '../../services/getInitials';
-import { useDeliverymen } from '../../hooks/DeliverymenContextx';
+import {
+  DeliverymanData,
+  useDeliverymen,
+} from '../../hooks/DeliverymenContextx';
 import { getFilesUrl } from '../../services/getFilesUrl';
-import { useModal } from '../../hooks/ModalContext';
+import { useFormModal } from '../../hooks/FormModalContext';
 
 import ActionButton from '../../components/ActionButton';
 import Button from '../../components/Button';
+import Form from '../../components/Form';
+import Input from '../../components/Input';
 import Modal from '../../components/Modal';
 import SearchBar from '../../components/SearchBar';
 import SideBar from '../../components/SideBar';
@@ -25,29 +30,41 @@ import {
   HeadContainer,
   MainContainer,
   ImageContainer,
-  AddImageButton,
+  AvatarContainer,
 } from './styles';
-import Form from '../../components/Form';
-import Input from '../../components/Input';
+
+interface deliverymanCredetials {
+  name: string;
+  email: string;
+}
 
 const Deliverymen: React.FC = () => {
-  const { toggleModalState } = useModal();
+  const { toggleModalState, toEditData, setFunction } = useFormModal();
   const { getAllDeliverymen, deliverymen } = useDeliverymen();
 
   useEffect(() => {
     getAllDeliverymen();
   }, [getAllDeliverymen]);
 
+  async function handleSubmit({ name, email }: DeliverymanData): Promise<void> {
+    setFunction<deliverymanCredetials>(
+      toEditData,
+      { email, name },
+      'deliverymen',
+    );
+  }
+
   return (
     <Container>
       <Modal confirmButtonTag="Contratar">
         <div>
           <h1>Contratando...</h1>
-          <Form onSubmit={() => alert('adicionado')}>
-            <AddImageButton>
+          <Form id="hook-form" onSubmit={handleSubmit} initialData={toEditData}>
+            <AvatarContainer htmlFor="avatar">
               <img src={userImg} alt="Adicionar foto" />
               <p>Adcionar foto</p>
-            </AddImageButton>
+              <input type="file" id="avatar" />
+            </AvatarContainer>
             <Input
               name="name"
               label="Nome"
@@ -58,7 +75,7 @@ const Deliverymen: React.FC = () => {
               name="email"
               label="Email"
               icon={emailImg}
-              placeholder="Seu email"
+              placeholder="Email do funcionário"
             />
           </Form>
         </div>
@@ -66,7 +83,10 @@ const Deliverymen: React.FC = () => {
       <SideBar selectedTab="deliveryman" />
       <PageContainer>
         <HeadContainer>
-          <Button onClick={toggleModalState} style={{ width: '16vw' }}>
+          <Button
+            onClick={() => toggleModalState({})}
+            style={{ width: '16vw' }}
+          >
             Contratar
           </Button>
           <SearchBar />
@@ -116,7 +136,12 @@ const Deliverymen: React.FC = () => {
                     <p>5</p>
                   </td>
                   <td>
-                    <ActionButton color="#ffc600">
+                    <ActionButton
+                      color="#ffc600"
+                      onClick={() => {
+                        toggleModalState<DeliverymanData>(deliveryman);
+                      }}
+                    >
                       <img src={editImg} alt="Editar" />
                     </ActionButton>
                     <ActionButton color="#bd1111">
