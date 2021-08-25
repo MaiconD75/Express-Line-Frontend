@@ -2,11 +2,11 @@ import { darken, lighten } from 'polished';
 import { ButtonHTMLAttributes } from 'react';
 import styled from 'styled-components';
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface StyledButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   color: string;
 }
 
-export const Button = styled.button<ButtonProps>`
+export const StyledButton = styled.button<StyledButtonProps>`
   width: 48px;
   height: 48px;
 

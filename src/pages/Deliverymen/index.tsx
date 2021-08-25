@@ -3,17 +3,21 @@ import React, { useEffect } from 'react';
 import getInitials from '../../services/getInitials';
 import { useDeliverymen } from '../../hooks/DeliverymenContextx';
 import { getFilesUrl } from '../../services/getFilesUrl';
+import { useModal } from '../../hooks/ModalContext';
 
 import ActionButton from '../../components/ActionButton';
 import Button from '../../components/Button';
+import Modal from '../../components/Modal';
 import SearchBar from '../../components/SearchBar';
 import SideBar from '../../components/SideBar';
 import Table from '../../components/Table';
 import TableHead from '../../components/Table/TableHead';
 import TableItem from '../../components/Table/TableItem';
 
+import emailImg from '../../assets/png/email.png';
 import editImg from '../../assets/png/edit.png';
 import fireImg from '../../assets/png/fire.png';
+import userImg from '../../assets/png/user.png';
 
 import {
   Container,
@@ -21,9 +25,13 @@ import {
   HeadContainer,
   MainContainer,
   ImageContainer,
+  AddImageButton,
 } from './styles';
+import Form from '../../components/Form';
+import Input from '../../components/Input';
 
 const Deliverymen: React.FC = () => {
+  const { toggleModalState } = useModal();
   const { getAllDeliverymen, deliverymen } = useDeliverymen();
 
   useEffect(() => {
@@ -32,10 +40,35 @@ const Deliverymen: React.FC = () => {
 
   return (
     <Container>
+      <Modal confirmButtonTag="Contratar">
+        <div>
+          <h1>Contratando...</h1>
+          <Form onSubmit={() => alert('adicionado')}>
+            <AddImageButton>
+              <img src={userImg} alt="Adicionar foto" />
+              <p>Adcionar foto</p>
+            </AddImageButton>
+            <Input
+              name="name"
+              label="Nome"
+              icon={userImg}
+              placeholder="Nome do funcionário"
+            />
+            <Input
+              name="email"
+              label="Email"
+              icon={emailImg}
+              placeholder="Seu email"
+            />
+          </Form>
+        </div>
+      </Modal>
       <SideBar selectedTab="deliveryman" />
       <PageContainer>
         <HeadContainer>
-          <Button style={{ width: '16vw' }}>Contratar</Button>
+          <Button onClick={toggleModalState} style={{ width: '16vw' }}>
+            Contratar
+          </Button>
           <SearchBar />
         </HeadContainer>
 

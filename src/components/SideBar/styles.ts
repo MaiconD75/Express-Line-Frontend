@@ -148,7 +148,7 @@ export const Container = styled.div<ContainerProps>`
   height: 100vh;
   width: 128px;
 
-  z-index: 100;
+  z-index: 2;
   position: absolute;
 
   display: flex;

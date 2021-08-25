@@ -1,6 +1,6 @@
 import React, { ButtonHTMLAttributes } from 'react';
 
-import { Button } from './styles';
+import { StyledButton } from './styles';
 
 interface ActionButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   color: string;
@@ -12,9 +12,9 @@ const ActionButton: React.FC<ActionButtonProps> = ({
   ...rest
 }) => {
   return (
-    <Button color={color} {...rest}>
+    <StyledButton color={color} {...rest}>
       {children}
-    </Button>
+    </StyledButton>
   );
 };
 

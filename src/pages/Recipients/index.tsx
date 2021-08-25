@@ -32,7 +32,7 @@ const Recipients: React.FC = () => {
       <SideBar selectedTab="recipient" />
       <PageContainer>
         <HeadContainer>
-          <Button style={{ width: '16vw' }}>Registrar estoque</Button>
+          <Button style={{ width: '16vw' }}>Adicionar destinatário</Button>
           <SearchBar />
         </HeadContainer>
 
