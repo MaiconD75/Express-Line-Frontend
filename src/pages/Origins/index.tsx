@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { useOrigins } from '../../hooks/OriginsContextx';
+import { OriginData } from '../../hooks/OriginsContextx';
 
 import ActionButton from '../../components/ActionButton';
 import Button from '../../components/Button';
@@ -19,13 +19,14 @@ import {
   HeadContainer,
   MainContainer,
 } from './styles';
+import api from '../../services/api';
 
 const Origins: React.FC = () => {
-  const { getAllOrigins, origins } = useOrigins();
+  const [origins, setOrigins] = useState<OriginData[]>([]);
 
   useEffect(() => {
-    getAllOrigins();
-  }, [getAllOrigins]);
+    api.get('/origins').then(response => setOrigins(response.data));
+  }, []);
 
   return (
     <Container>
@@ -55,7 +56,7 @@ const Origins: React.FC = () => {
             </TableHead>
             {origins.map(origin => {
               return (
-                <TableItem>
+                <TableItem key={origin.id}>
                   <td>{origin.street}</td>
                   <td>{origin.city}</td>
                   <td>

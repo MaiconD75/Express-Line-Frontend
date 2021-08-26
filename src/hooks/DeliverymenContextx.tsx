@@ -1,6 +1,4 @@
 import React, { createContext, useCallback, useState, useContext } from 'react';
-import api from '../services/api';
-import { useAuth } from './AuthContext';
 
 export interface DeliverymanData {
   avatar: string;
@@ -11,7 +9,7 @@ export interface DeliverymanData {
 
 interface DeliverymenContextData {
   deliverymen: DeliverymanData[];
-  getAllDeliverymen(): Promise<void>;
+  setAllDeliverymen(allDeliverymen: DeliverymanData[]): void;
 }
 
 export const DeliverymenContext = createContext<DeliverymenContextData>(
@@ -20,18 +18,16 @@ export const DeliverymenContext = createContext<DeliverymenContextData>(
 
 export const DeliverymenProvider: React.FC = ({ children }) => {
   const [deliverymen, setDeliverymen] = useState([] as DeliverymanData[]);
-  const { user } = useAuth();
 
-  const getAllDeliverymen = useCallback(async () => {
-    const response = await api.get('/deliverymen', {
-      headers: { Authorization: `Bearer ${user.token}` },
-    });
-
-    setDeliverymen(response.data);
-  }, [setDeliverymen, user.token]);
+  const setAllDeliverymen = useCallback(
+    allDeliverymen => {
+      setDeliverymen(allDeliverymen);
+    },
+    [setDeliverymen],
+  );
 
   return (
-    <DeliverymenContext.Provider value={{ getAllDeliverymen, deliverymen }}>
+    <DeliverymenContext.Provider value={{ setAllDeliverymen, deliverymen }}>
       {children}
     </DeliverymenContext.Provider>
   );

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { DeliveryData } from '../../hooks/DeliveriesContextx';
+import { DeliveryData } from '../../pages/Deliveries';
 
 import { Container } from './styles';
 

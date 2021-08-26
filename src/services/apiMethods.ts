@@ -4,10 +4,16 @@ export const createOrUpdateEntity = async <T extends { id?: string }>(
   initialData: T,
   newData: T,
   entity: string,
-): Promise<void> => {
-  const response = initialData.id
+): Promise<T> => {
+  const reponse = initialData.id
     ? await api.put(`/${entity}/${initialData.id}`, newData)
     : await api.post(`/${entity}`, newData);
 
-  console.log(response);
+  return reponse.data;
+};
+
+export const getEntity = async <T>(entity: string): Promise<T> => {
+  const response = await api.get(`/${entity}`);
+
+  return response.data;
 };

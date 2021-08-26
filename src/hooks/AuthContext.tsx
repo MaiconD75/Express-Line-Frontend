@@ -1,4 +1,10 @@
-import React, { createContext, useCallback, useState, useContext } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useState,
+  useContext,
+  useEffect,
+} from 'react';
 import { useHistory } from 'react-router-dom';
 import api from '../services/api';
 
@@ -29,11 +35,22 @@ export const AuthProvider: React.FC = ({ children }) => {
     const user = localStorage.getItem('@ExpressLine:user');
 
     if (token && user) {
+      api.defaults.headers.Authorization = `Bearer ${token}`;
       return { token, data: JSON.parse(user) };
     }
 
     return {} as AuthState;
   });
+
+  useEffect(() => {
+    const token = localStorage.getItem('@ExpressLine:token');
+    const user = localStorage.getItem('@ExpressLine:user');
+
+    if (token && user) {
+      setData({ token, data: JSON.parse(user) });
+      api.defaults.headers.Authorization = `Bearer ${token}`;
+    }
+  }, []);
 
   const login = useCallback(
     async ({ email, password }) => {
@@ -44,12 +61,14 @@ export const AuthProvider: React.FC = ({ children }) => {
 
       const { token, user } = response.data;
 
+      api.defaults.headers.Authorization = `Bearer ${token}`;
+
       localStorage.setItem('@ExpressLine:token', token);
       localStorage.setItem('@ExpressLine:user', JSON.stringify(user));
 
       setData({ token, data: user });
 
-      history.push('/deliveries');
+      history.push('/Deliveries');
     },
     [history],
   );

@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { useRecipients } from '../../hooks/RecipientContextx';
+import { RecipientData } from '../../hooks/RecipientsContextx';
 
 import ActionButton from '../../components/ActionButton';
 import Button from '../../components/Button';
@@ -19,13 +19,14 @@ import {
   HeadContainer,
   MainContainer,
 } from './styles';
+import api from '../../services/api';
 
 const Recipients: React.FC = () => {
-  const { getAllRecipients, recipients } = useRecipients();
+  const [recipients, setRecipients] = useState<RecipientData[]>([]);
 
   useEffect(() => {
-    getAllRecipients();
-  }, [getAllRecipients]);
+    api.get('/recipients').then(response => setRecipients(response.data));
+  }, []);
 
   return (
     <Container>
@@ -56,7 +57,7 @@ const Recipients: React.FC = () => {
             </TableHead>
             {recipients.map(recipient => {
               return (
-                <TableItem>
+                <TableItem key={recipient.id}>
                   <td>{recipient.name}</td>
                   <td>{recipient.street}</td>
                   <td>{recipient.city}</td>

@@ -1,6 +1,5 @@
 import React, { createContext, useCallback, useState, useContext } from 'react';
 import api from '../services/api';
-import { useAuth } from './AuthContext';
 
 export interface RecipientData {
   id: string;
@@ -24,15 +23,12 @@ export const RecipientsContext = createContext<RecipientsContextData>(
 
 export const RecipientsProvider: React.FC = ({ children }) => {
   const [recipients, setRecipients] = useState([] as RecipientData[]);
-  const { user } = useAuth();
 
   const getAllRecipients = useCallback(async () => {
-    const response = await api.get('/Recipients', {
-      headers: { Authorization: `Bearer ${user.token}` },
-    });
+    const response = await api.get('/Recipients');
 
     setRecipients(response.data);
-  }, [setRecipients, user.token]);
+  }, [setRecipients]);
 
   return (
     <RecipientsContext.Provider value={{ getAllRecipients, recipients }}>
