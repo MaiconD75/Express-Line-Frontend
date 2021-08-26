@@ -1,12 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import getInitials from '../../services/getInitials';
+import { useHistory } from 'react-router-dom';
+import getInitials from '../../utils/getInitials';
 import {
   DeliverymanData,
   useDeliverymen,
 } from '../../hooks/DeliverymenContextx';
-import { getFilesUrl } from '../../services/getFilesUrl';
-import { useFormModal } from '../../hooks/FormModalContext';
+import { getFilesUrl } from '../../utils/getFilesUrl';
+import { useModal } from '../../hooks/ModalContext';
 
 import ActionButton from '../../components/ActionButton';
 import Button from '../../components/Button';
@@ -32,26 +33,33 @@ import {
   ImageContainer,
   AvatarContainer,
 } from './styles';
-
-interface deliverymanCredetials {
-  name: string;
-  email: string;
-}
+import { createOrUpdateEntity } from '../../services/createOrUpdateEntity';
 
 const Deliverymen: React.FC = () => {
-  const { toggleModalState, toEditData, setFunction } = useFormModal();
+  const { toggleModalState } = useModal();
   const { getAllDeliverymen, deliverymen } = useDeliverymen();
+  const history = useHistory();
+
+  const [initialData, setInitialData] = useState({});
 
   useEffect(() => {
     getAllDeliverymen();
   }, [getAllDeliverymen]);
 
-  async function handleSubmit({ name, email }: DeliverymanData): Promise<void> {
-    setFunction<deliverymanCredetials>(
-      toEditData,
-      { email, name },
+  function handleOpenModal(data?: DeliverymanData): void {
+    setInitialData(data || {});
+    toggleModalState();
+  }
+
+  async function handleSubmit(newData: DeliverymanData): Promise<void> {
+    createOrUpdateEntity<DeliverymanData>(
+      initialData as DeliverymanData,
+      newData,
       'deliverymen',
     );
+
+    toggleModalState();
+    history.go(0);
   }
 
   return (
@@ -59,7 +67,11 @@ const Deliverymen: React.FC = () => {
       <Modal confirmButtonTag="Contratar">
         <div>
           <h1>Contratando...</h1>
-          <Form id="hook-form" onSubmit={handleSubmit} initialData={toEditData}>
+          <Form
+            id="hook-form"
+            onSubmit={handleSubmit}
+            initialData={initialData}
+          >
             <AvatarContainer htmlFor="avatar">
               <img src={userImg} alt="Adicionar foto" />
               <p>Adcionar foto</p>
@@ -83,10 +95,7 @@ const Deliverymen: React.FC = () => {
       <SideBar selectedTab="deliveryman" />
       <PageContainer>
         <HeadContainer>
-          <Button
-            onClick={() => toggleModalState({})}
-            style={{ width: '16vw' }}
-          >
+          <Button onClick={() => handleOpenModal()} style={{ width: '16vw' }}>
             Contratar
           </Button>
           <SearchBar />
@@ -139,7 +148,7 @@ const Deliverymen: React.FC = () => {
                     <ActionButton
                       color="#ffc600"
                       onClick={() => {
-                        toggleModalState<DeliverymanData>(deliveryman);
+                        handleOpenModal(deliveryman);
                       }}
                     >
                       <img src={editImg} alt="Editar" />

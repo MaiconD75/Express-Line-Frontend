@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 import { useDeliveries } from '../../hooks/DeliveriesContextx';
-import FormatAddres from '../../services/FormatAddres';
+import FormatAddres from '../../utils/FormatAddres';
 
 import ActionButton from '../../components/ActionButton';
 import Button from '../../components/Button';
