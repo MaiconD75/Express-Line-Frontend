@@ -4,12 +4,8 @@ import Button from '../Button';
 
 import { Container, MainContainer, ButtonContainer } from './styles';
 
-interface ModalProps {
-  confirmButtonTag: string;
-}
-
-const Modal: React.FC<ModalProps> = ({ confirmButtonTag, children }) => {
-  const { toggleModalState, isClosed } = useModal();
+const Modal: React.FC = ({ children }) => {
+  const { toggleModalState, isClosed, confirmButtonTag } = useModal();
 
   return (
     <Container isClosed={isClosed}>
