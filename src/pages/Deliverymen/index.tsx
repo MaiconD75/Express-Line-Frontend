@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
-import { useHistory } from 'react-router-dom';
+import { createOrUpdateEntity } from '../../services/apiMethods';
 import getInitials from '../../utils/getInitials';
-import {
-  DeliverymanData,
-  useDeliverymen,
-} from '../../hooks/DeliverymenContextx';
+import { DeliverymanData } from '../../hooks/DeliverymenContextx';
 import { getFilesUrl } from '../../utils/getFilesUrl';
 import { useModal } from '../../hooks/ModalContext';
 
@@ -33,33 +30,41 @@ import {
   ImageContainer,
   AvatarContainer,
 } from './styles';
-import { createOrUpdateEntity } from '../../services/createOrUpdateEntity';
+import api from '../../services/api';
 
 const Deliverymen: React.FC = () => {
   const { toggleModalState } = useModal();
-  const { getAllDeliverymen, deliverymen } = useDeliverymen();
-  const history = useHistory();
 
+  const [deliverymen, setDeliverymen] = useState<DeliverymanData[]>([]);
   const [initialData, setInitialData] = useState({});
 
   useEffect(() => {
-    getAllDeliverymen();
-  }, [getAllDeliverymen]);
+    api.get('/deliverymen').then(response => setDeliverymen(response.data));
+  }, []);
 
   function handleOpenModal(data?: DeliverymanData): void {
     setInitialData(data || {});
     toggleModalState();
   }
 
-  async function handleSubmit(newData: DeliverymanData): Promise<void> {
+  async function handleSubmit(newDeliveryman: DeliverymanData): Promise<void> {
     createOrUpdateEntity<DeliverymanData>(
       initialData as DeliverymanData,
-      newData,
+      newDeliveryman,
       'deliverymen',
-    );
+    ).then(() => {
+      setDeliverymen(allDeliverymen =>
+        initialData
+          ? allDeliverymen.map(deliveryman =>
+              deliveryman.id === newDeliveryman.id
+                ? newDeliveryman
+                : deliveryman,
+            )
+          : { ...allDeliverymen, newDeliveryman },
+      );
+    });
 
     toggleModalState();
-    history.go(0);
   }
 
   return (

@@ -1,35 +1,41 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import {
+  Redirect,
   Route as ReactRoute,
   RouteProps as ReactRouteProps,
-  useHistory,
 } from 'react-router-dom';
-
-import api from '../services/api';
 import { useAuth } from '../hooks/AuthContext';
 
 interface RouteProps extends ReactRouteProps {
   needAuth?: boolean;
+  component: React.ComponentType;
 }
 
 const Route: React.FC<RouteProps> = ({
-  children,
+  component: Component,
   needAuth = false,
   ...rest
 }) => {
   const { user } = useAuth();
-  const history = useHistory();
 
-  useEffect(() => {
-    api.defaults.headers.authorization = `Bearer ${user.token}`;
-  }, [user.token]);
-
-  if (needAuth && !user) {
-    history.push('/');
-  }
-
-  return <ReactRoute {...rest}>{children}</ReactRoute>;
+  return (
+    <ReactRoute
+      {...rest}
+      render={({ location }) => {
+        return needAuth === !!user.token ? (
+          <Component />
+        ) : (
+          <Redirect
+            to={{
+              pathname: needAuth ? '/' : '/Deliveries',
+              state: { from: location },
+            }}
+          />
+        );
+      }}
+    />
+  );
 };
 
 export default Route;

@@ -1,6 +1,5 @@
 import React, { createContext, useCallback, useState, useContext } from 'react';
 import api from '../services/api';
-import { useAuth } from './AuthContext';
 
 export interface OriginData {
   id: string;
@@ -23,15 +22,12 @@ export const OriginsContext = createContext<OriginsContextData>(
 
 export const OriginsProvider: React.FC = ({ children }) => {
   const [origins, setOrigins] = useState([] as OriginData[]);
-  const { user } = useAuth();
 
   const getAllOrigins = useCallback(async () => {
-    const response = await api.get('/Origins', {
-      headers: { Authorization: `Bearer ${user.token}` },
-    });
+    const response = await api.get('/Origins');
 
     setOrigins(response.data);
-  }, [setOrigins, user.token]);
+  }, [setOrigins]);
 
   return (
     <OriginsContext.Provider value={{ getAllOrigins, origins }}>

@@ -1,7 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { useDeliveries } from '../../hooks/DeliveriesContextx';
 import FormatAddres from '../../utils/FormatAddres';
+
+import { DeliverymanData } from '../../hooks/DeliverymenContextx';
+import { RecipientData } from '../../hooks/RecipientsContextx';
+import { OriginData } from '../../hooks/OriginsContextx';
 
 import ActionButton from '../../components/ActionButton';
 import Button from '../../components/Button';
@@ -22,13 +25,26 @@ import {
   MainContainer,
   StatusContainer,
 } from './styles';
+import api from '../../services/api';
+
+export interface DeliveryData {
+  id: string;
+  product: string;
+  signature: string;
+  start_date: string;
+  end_date: string;
+  canceled_at: string;
+  deliveryman: DeliverymanData;
+  recipient: RecipientData;
+  origin: OriginData;
+}
 
 const Deliveries: React.FC = () => {
-  const { getAllDeliveries, deliveries } = useDeliveries();
+  const [deliveries, setDeliveries] = useState<DeliveryData[]>([]);
 
   useEffect(() => {
-    getAllDeliveries();
-  }, [getAllDeliveries]);
+    api.get('/deliveries').then(response => setDeliveries(response.data));
+  }, []);
 
   return (
     <Container>
