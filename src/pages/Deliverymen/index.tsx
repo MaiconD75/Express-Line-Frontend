@@ -36,32 +36,32 @@ const Deliverymen: React.FC = () => {
   const { toggleModalState } = useModal();
 
   const [deliverymen, setDeliverymen] = useState<DeliverymanData[]>([]);
-  const [initialData, setInitialData] = useState({});
+  const [initialData, setInitialData] = useState<{ id?: string }>({});
 
   useEffect(() => {
     api.get('/deliverymen').then(response => setDeliverymen(response.data));
   }, []);
 
-  function handleOpenModal(data?: DeliverymanData): void {
+  function handleOpenModal(buttonTag: string, data?: DeliverymanData): void {
     setInitialData(data || {});
-    toggleModalState();
+    toggleModalState(buttonTag);
   }
 
-  async function handleSubmit(newDeliveryman: DeliverymanData): Promise<void> {
+  async function handleSubmit(newData: DeliverymanData): Promise<void> {
     createOrUpdateEntity<DeliverymanData>(
       initialData as DeliverymanData,
-      newDeliveryman,
+      newData,
       'deliverymen',
-    ).then(() => {
-      setDeliverymen(allDeliverymen =>
-        initialData
-          ? allDeliverymen.map(deliveryman =>
-              deliveryman.id === newDeliveryman.id
-                ? newDeliveryman
-                : deliveryman,
-            )
-          : { ...allDeliverymen, newDeliveryman },
-      );
+    ).then(newDeliveryman => {
+      setDeliverymen(allDeliverymen => {
+        if (initialData.id) {
+          return allDeliverymen.map(deliveryman =>
+            deliveryman.id === newDeliveryman.id ? newDeliveryman : deliveryman,
+          );
+        }
+
+        return [...allDeliverymen, newDeliveryman];
+      });
     });
 
     toggleModalState();
@@ -69,7 +69,7 @@ const Deliverymen: React.FC = () => {
 
   return (
     <Container>
-      <Modal confirmButtonTag="Contratar">
+      <Modal>
         <div>
           <h1>Contratando...</h1>
           <Form
@@ -100,7 +100,10 @@ const Deliverymen: React.FC = () => {
       <SideBar selectedTab="deliveryman" />
       <PageContainer>
         <HeadContainer>
-          <Button onClick={() => handleOpenModal()} style={{ width: '16vw' }}>
+          <Button
+            onClick={() => handleOpenModal('Contratar')}
+            style={{ width: '16vw' }}
+          >
             Contratar
           </Button>
           <SearchBar />
@@ -153,7 +156,7 @@ const Deliverymen: React.FC = () => {
                     <ActionButton
                       color="#ffc600"
                       onClick={() => {
-                        handleOpenModal(deliveryman);
+                        handleOpenModal('Atualizar');
                       }}
                     >
                       <img src={editImg} alt="Editar" />

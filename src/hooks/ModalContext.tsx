@@ -2,7 +2,8 @@ import React, { createContext, useCallback, useState, useContext } from 'react';
 
 interface ModalContextData {
   isClosed: boolean;
-  toggleModalState(): void;
+  confirmButtonTag: string;
+  toggleModalState(tag?: string): void;
 }
 
 export const ModalContext = createContext<ModalContextData>(
@@ -11,16 +12,22 @@ export const ModalContext = createContext<ModalContextData>(
 
 export const ModalProvider: React.FC = ({ children }) => {
   const [isClosed, setIsClosed] = useState(true);
+  const [confirmButtonTag, setConfirmButtonTag] = useState('');
 
-  const toggleModalState = useCallback(() => {
-    setIsClosed(!isClosed);
-  }, [isClosed]);
+  const toggleModalState = useCallback(
+    (tag = '') => {
+      setIsClosed(!isClosed);
+      setConfirmButtonTag(tag);
+    },
+    [isClosed],
+  );
 
   return (
     <ModalContext.Provider
       value={{
         isClosed,
         toggleModalState,
+        confirmButtonTag,
       }}
     >
       {children}
