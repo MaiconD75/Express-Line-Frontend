@@ -112,7 +112,7 @@ const Deliverymen: React.FC = () => {
 
       setDeliverymen(deliverymen.filter(deliveryman => deliveryman.id !== id));
     },
-    [setDeliverymen, deliverymen],
+    [deliverymen],
   );
 
   return (

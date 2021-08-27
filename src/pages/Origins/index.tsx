@@ -48,8 +48,6 @@ const Origins: React.FC = () => {
 
   const handleSubmit = useCallback(
     async (newData: OriginData) => {
-      console.log(newData);
-
       const newOrigin = await createOrUpdateEntity<OriginData>(
         initialData as OriginData,
         newData,
@@ -68,6 +66,15 @@ const Origins: React.FC = () => {
       toggleModalState();
     },
     [initialData, toggleModalState],
+  );
+
+  const handleDeleteItem = useCallback(
+    async (id: string) => {
+      await api.delete(`/origins/${id}`);
+
+      setOrigins(origins.filter(origin => origin.id !== id));
+    },
+    [origins],
   );
 
   return (
@@ -141,7 +148,10 @@ const Origins: React.FC = () => {
                     >
                       <img src={editImg} alt="Editar" />
                     </ActionButton>
-                    <ActionButton color="#bd1111">
+                    <ActionButton
+                      color="#bd1111"
+                      onClick={() => handleDeleteItem(origin.id)}
+                    >
                       <img src={trashImg} alt="Excluir" />
                     </ActionButton>
                   </td>
