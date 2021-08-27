@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
 import { createOrUpdateEntity } from '../../services/apiMethods';
 import getInitials from '../../utils/getInitials';
@@ -36,23 +36,45 @@ const Deliverymen: React.FC = () => {
   const { toggleModalState } = useModal();
 
   const [deliverymen, setDeliverymen] = useState<DeliverymanData[]>([]);
-  const [initialData, setInitialData] = useState<{ id?: string }>({});
+  const [initialData, setInitialData] = useState<{
+    id?: string;
+    avatar?: string;
+  }>({});
+  const [newAvatarData, setNewAvatarData] = useState<Blob>({} as Blob);
+  const [newAvatarUrl, setNewAvatarUrl] = useState('');
 
   useEffect(() => {
     api.get('/deliverymen').then(response => setDeliverymen(response.data));
   }, []);
+
+  useEffect(() => {
+    setNewAvatarUrl('');
+  }, [setNewAvatarUrl, toggleModalState]);
 
   function handleOpenForm(buttonTag: string, data?: DeliverymanData): void {
     setInitialData(data || {});
     toggleModalState(buttonTag);
   }
 
-  async function handleSubmit(newData: DeliverymanData): Promise<void> {
-    createOrUpdateEntity<DeliverymanData>(
-      initialData as DeliverymanData,
-      newData,
-      'deliverymen',
-    ).then(newDeliveryman => {
+  const handleAvatarChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>): void => {
+      if (e.target.files && e.target.files[0]) {
+        setNewAvatarData(e.target.files[0]);
+
+        setNewAvatarUrl(URL.createObjectURL(e.target.files[0]));
+      }
+    },
+    [setNewAvatarData, setNewAvatarUrl],
+  );
+
+  const handleSubmit = useCallback(
+    async (newData: DeliverymanData): Promise<void> => {
+      const newDeliveryman = await createOrUpdateEntity<DeliverymanData>(
+        initialData as DeliverymanData,
+        newData,
+        'deliverymen',
+      );
+
       setDeliverymen(allDeliverymen => {
         if (initialData.id) {
           return allDeliverymen.map(deliveryman =>
@@ -62,10 +84,24 @@ const Deliverymen: React.FC = () => {
 
         return [...allDeliverymen, newDeliveryman];
       });
-    });
 
-    toggleModalState();
-  }
+      const avatarData = new FormData();
+      avatarData.append('avatar', newAvatarData);
+
+      await api
+        .patch(`/deliverymen/images/${newDeliveryman.id}`, avatarData)
+        .then(response => {
+          setDeliverymen(allDeliverymen =>
+            allDeliverymen.map(deliveryman =>
+              deliveryman.id === response.data.id ? response.data : deliveryman,
+            ),
+          );
+        });
+
+      toggleModalState();
+    },
+    [initialData, toggleModalState, newAvatarData],
+  );
 
   async function handleDeleteItem(id: string): Promise<void> {
     await api.delete(`/deliverymen/${id}`);
@@ -84,9 +120,22 @@ const Deliverymen: React.FC = () => {
             initialData={initialData}
           >
             <AvatarContainer htmlFor="avatar">
-              <img src={userImg} alt="Adicionar foto" />
+              <img
+                src={
+                  newAvatarUrl ||
+                  (initialData.avatar
+                    ? getFilesUrl(initialData.avatar)
+                    : userImg)
+                }
+                alt="Adicionar foto"
+              />
               <p>Adcionar foto</p>
-              <input type="file" id="avatar" />
+              <input
+                type="file"
+                accept="image/*"
+                id="avatar"
+                onChange={handleAvatarChange}
+              />
             </AvatarContainer>
             <Input
               name="name"
@@ -162,7 +211,7 @@ const Deliverymen: React.FC = () => {
                     <ActionButton
                       color="#ffc600"
                       onClick={() => {
-                        handleOpenForm('Atualizar');
+                        handleOpenForm('Atualizar', deliveryman);
                       }}
                     >
                       <img src={editImg} alt="Editar" />
