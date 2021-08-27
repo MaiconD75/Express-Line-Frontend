@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
+import { Form } from '@unform/web';
 import { OriginData } from '../../hooks/OriginsContextx';
 
 import ActionButton from '../../components/ActionButton';
@@ -20,20 +21,91 @@ import {
   MainContainer,
 } from './styles';
 import api from '../../services/api';
+import Modal from '../../components/Modal';
+import Input from '../../components/Input';
+import { useModal } from '../../hooks/ModalContext';
+import { createOrUpdateEntity } from '../../services/apiMethods';
 
 const Origins: React.FC = () => {
   const [origins, setOrigins] = useState<OriginData[]>([]);
+  const [initialData, setInitialData] = useState<{
+    id?: string;
+  }>({});
+
+  const { toggleModalState } = useModal();
 
   useEffect(() => {
     api.get('/origins').then(response => setOrigins(response.data));
   }, []);
 
+  const handleOpenForm = useCallback(
+    (buttonTag: string, data?: OriginData): void => {
+      setInitialData(data || {});
+      toggleModalState(buttonTag);
+    },
+    [toggleModalState],
+  );
+
+  const handleSubmit = useCallback(
+    async (newData: OriginData) => {
+      const newOrigin = await createOrUpdateEntity<OriginData>(
+        initialData as OriginData,
+        newData,
+        'origins',
+      );
+
+      setOrigins(allOrigins => {
+        if (initialData.id) {
+          return allOrigins.map(origin =>
+            origin.id === newOrigin.id ? newOrigin : origin,
+          );
+        }
+        return [...allOrigins, newOrigin];
+      });
+
+      toggleModalState();
+    },
+    [initialData, toggleModalState],
+  );
+
+  const handleDeleteItem = useCallback(
+    async (id: string) => {
+      await api.delete(`/origins/${id}`);
+
+      setOrigins(origins.filter(origin => origin.id !== id));
+    },
+    [origins],
+  );
+
   return (
     <Container>
+      <Modal>
+        <h1>Registrando estoque...</h1>
+
+        <Form id="hook-form" onSubmit={handleSubmit} initialData={initialData}>
+          <div>
+            <Input name="street" placeholder="Rua/Avenida" />
+            <Input name="number" placeholder="Número" type="number" />
+          </div>
+          <div>
+            <Input name="city" placeholder="Cidade" />
+            <Input name="state" placeholder="Estado" />
+            <Input name="zip_code" placeholder="CEP" />
+          </div>
+          <div>
+            <Input name="complement" placeholder="Complemento" />
+          </div>
+        </Form>
+      </Modal>
       <SideBar selectedTab="origin" />
       <PageContainer>
         <HeadContainer>
-          <Button style={{ width: '16vw' }}>Registrar estoque</Button>
+          <Button
+            style={{ width: '16vw' }}
+            onClick={() => handleOpenForm('Registrar')}
+          >
+            Registrar estoque
+          </Button>
           <SearchBar />
         </HeadContainer>
 
@@ -65,15 +137,21 @@ const Origins: React.FC = () => {
                   <td>
                     <p>{origin.number}</p>
                   </td>
-                  <td>{origin.complement}</td>
+                  <td>{origin.complement || 'Sem complemento'}</td>
                   <td>
                     <p>{origin.zip_code}</p>
                   </td>
                   <td>
-                    <ActionButton color="#ffc600">
+                    <ActionButton
+                      color="#ffc600"
+                      onClick={() => handleOpenForm('Atualizar', origin)}
+                    >
                       <img src={editImg} alt="Editar" />
                     </ActionButton>
-                    <ActionButton color="#bd1111">
+                    <ActionButton
+                      color="#bd1111"
+                      onClick={() => handleDeleteItem(origin.id)}
+                    >
                       <img src={trashImg} alt="Excluir" />
                     </ActionButton>
                   </td>

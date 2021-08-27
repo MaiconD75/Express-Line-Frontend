@@ -1,7 +1,8 @@
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
-import { createOrUpdateEntity } from '../../services/apiMethods';
+import api from '../../services/api';
 import getInitials from '../../utils/getInitials';
+import { createOrUpdateEntity } from '../../services/apiMethods';
 import { DeliverymanData } from '../../hooks/DeliverymenContextx';
 import { getFilesUrl } from '../../utils/getFilesUrl';
 import { useModal } from '../../hooks/ModalContext';
@@ -30,7 +31,6 @@ import {
   ImageContainer,
   AvatarContainer,
 } from './styles';
-import api from '../../services/api';
 
 const Deliverymen: React.FC = () => {
   const { toggleModalState } = useModal();
@@ -51,10 +51,13 @@ const Deliverymen: React.FC = () => {
     setNewAvatarUrl('');
   }, [setNewAvatarUrl, toggleModalState]);
 
-  function handleOpenForm(buttonTag: string, data?: DeliverymanData): void {
-    setInitialData(data || {});
-    toggleModalState(buttonTag);
-  }
+  const handleOpenForm = useCallback(
+    (buttonTag: string, data?: DeliverymanData): void => {
+      setInitialData(data || {});
+      toggleModalState(buttonTag);
+    },
+    [toggleModalState],
+  );
 
   const handleAvatarChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>): void => {
@@ -103,54 +106,52 @@ const Deliverymen: React.FC = () => {
     [initialData, toggleModalState, newAvatarData],
   );
 
-  async function handleDeleteItem(id: string): Promise<void> {
-    await api.delete(`/deliverymen/${id}`);
+  const handleDeleteItem = useCallback(
+    async (id: string): Promise<void> => {
+      await api.delete(`/deliverymen/${id}`);
 
-    setDeliverymen(deliverymen.filter(deliveryman => deliveryman.id !== id));
-  }
+      setDeliverymen(deliverymen.filter(deliveryman => deliveryman.id !== id));
+    },
+    [deliverymen],
+  );
 
   return (
     <Container>
       <Modal>
-        <div>
-          <h1>Contratando...</h1>
-          <Form
-            id="hook-form"
-            onSubmit={handleSubmit}
-            initialData={initialData}
+        <h1>Contratando...</h1>
+        <Form id="hook-form" onSubmit={handleSubmit} initialData={initialData}>
+          <AvatarContainer
+            htmlFor="avatar"
+            hasImage={!!newAvatarUrl || !!initialData.avatar}
           >
-            <AvatarContainer htmlFor="avatar">
-              <img
-                src={
-                  newAvatarUrl ||
-                  (initialData.avatar
-                    ? getFilesUrl(initialData.avatar)
-                    : userImg)
-                }
-                alt="Adicionar foto"
-              />
-              <p>Adcionar foto</p>
-              <input
-                type="file"
-                accept="image/*"
-                id="avatar"
-                onChange={handleAvatarChange}
-              />
-            </AvatarContainer>
-            <Input
-              name="name"
-              label="Nome"
-              icon={userImg}
-              placeholder="Nome do funcionário"
+            <img
+              src={
+                newAvatarUrl ||
+                (initialData.avatar ? getFilesUrl(initialData.avatar) : userImg)
+              }
+              alt="Adicionar foto"
             />
-            <Input
-              name="email"
-              label="Email"
-              icon={emailImg}
-              placeholder="Email do funcionário"
+            <p>Adcionar foto</p>
+            <input
+              type="file"
+              accept="image/*"
+              id="avatar"
+              onChange={handleAvatarChange}
             />
-          </Form>
-        </div>
+          </AvatarContainer>
+          <Input
+            name="name"
+            label="Nome"
+            icon={userImg}
+            placeholder="Nome do funcionário"
+          />
+          <Input
+            name="email"
+            label="Email"
+            icon={emailImg}
+            placeholder="Email do funcionário"
+          />
+        </Form>
       </Modal>
       <SideBar selectedTab="deliveryman" />
       <PageContainer>

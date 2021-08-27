@@ -23,22 +23,23 @@ export const MainContainer = styled.div`
   height: 87vh;
   padding: 56px;
 
-  display: flex;
-  flex-direction: column;
   background-color: #f5f5f5;
-  justify-content: space-between;
   align-items: center;
+
+  overflow-y: scroll;
 
   border-radius: 12px;
 
-  & > div {
+  > div {
     width: 100%;
-    height: 100%auto;
+    min-height: 100%;
     display: flex;
+    justify-content: space-between;
     flex-direction: column;
     align-items: center;
 
     form {
+      width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -57,6 +58,7 @@ export const MainContainer = styled.div`
 
 export const ButtonContainer = styled.div`
   width: 100%;
+  margin-top: 40px;
 
   display: flex;
   flex-direction: row !important;
