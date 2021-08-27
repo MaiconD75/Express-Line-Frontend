@@ -69,6 +69,15 @@ const Recipients: React.FC = () => {
     [initialData, toggleModalState],
   );
 
+  const handleDeleteItem = useCallback(
+    async (id: string) => {
+      await api.delete(`/recipients/${id}`);
+
+      setRecipients(recipients.filter(recipient => recipient.id !== id));
+    },
+    [recipients],
+  );
+
   return (
     <Container>
       <Modal>
@@ -145,7 +154,10 @@ const Recipients: React.FC = () => {
                     >
                       <img src={editImg} alt="Editar" />
                     </ActionButton>
-                    <ActionButton color="#bd1111">
+                    <ActionButton
+                      color="#bd1111"
+                      onClick={() => handleDeleteItem(recipient.id)}
+                    >
                       <img src={trashImg} alt="Excluir" />
                     </ActionButton>
                   </td>
