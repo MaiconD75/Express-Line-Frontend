@@ -119,7 +119,10 @@ const Deliverymen: React.FC = () => {
             onSubmit={handleSubmit}
             initialData={initialData}
           >
-            <AvatarContainer htmlFor="avatar">
+            <AvatarContainer
+              htmlFor="avatar"
+              hasImage={!!newAvatarUrl || !!initialData.avatar}
+            >
               <img
                 src={
                   newAvatarUrl ||

@@ -29,6 +29,8 @@ export const MainContainer = styled.div`
   justify-content: space-between;
   align-items: center;
 
+  overflow-y: scroll;
+
   border-radius: 12px;
 
   & > div {
