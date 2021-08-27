@@ -14,6 +14,31 @@ export const Container = styled.div`
   height: 100vh;
   display: flex;
   flex-direction: row;
+
+  form {
+    > div {
+      width: 100%;
+
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+
+      & + div {
+        margin-top: 24px;
+      }
+
+      > div + div {
+        margin-left: 24px;
+      }
+
+      &:nth-child(1) > div:nth-child(1),
+      &:nth-child(2) > div:nth-child(1),
+      &:nth-child(3) > div:nth-child(1),
+      &:nth-child(4) > div:nth-child(1) {
+        width: 100%;
+      }
+    }
+  }
 `;
 
 export const PageContainer = styled.div`
