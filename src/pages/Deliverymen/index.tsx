@@ -42,7 +42,7 @@ const Deliverymen: React.FC = () => {
     api.get('/deliverymen').then(response => setDeliverymen(response.data));
   }, []);
 
-  function handleOpenModal(buttonTag: string, data?: DeliverymanData): void {
+  function handleOpenForm(buttonTag: string, data?: DeliverymanData): void {
     setInitialData(data || {});
     toggleModalState(buttonTag);
   }
@@ -65,6 +65,12 @@ const Deliverymen: React.FC = () => {
     });
 
     toggleModalState();
+  }
+
+  async function handleDeleteItem(id: string): Promise<void> {
+    await api.delete(`/deliverymen/${id}`);
+
+    setDeliverymen(deliverymen.filter(deliveryman => deliveryman.id !== id));
   }
 
   return (
@@ -101,7 +107,7 @@ const Deliverymen: React.FC = () => {
       <PageContainer>
         <HeadContainer>
           <Button
-            onClick={() => handleOpenModal('Contratar')}
+            onClick={() => handleOpenForm('Contratar')}
             style={{ width: '16vw' }}
           >
             Contratar
@@ -156,12 +162,15 @@ const Deliverymen: React.FC = () => {
                     <ActionButton
                       color="#ffc600"
                       onClick={() => {
-                        handleOpenModal('Atualizar');
+                        handleOpenForm('Atualizar');
                       }}
                     >
                       <img src={editImg} alt="Editar" />
                     </ActionButton>
-                    <ActionButton color="#bd1111">
+                    <ActionButton
+                      color="#bd1111"
+                      onClick={() => handleDeleteItem(deliveryman.id)}
+                    >
                       <img src={fireImg} alt="Excluir" />
                     </ActionButton>
                   </td>
