@@ -13,14 +13,16 @@ const Modal: React.FC = ({ children }) => {
         <></>
       ) : (
         <MainContainer>
-          {children}
+          <div>
+            {children}
 
-          <ButtonContainer>
-            <Button onClick={() => toggleModalState()}>Cancelar</Button>
-            <Button type="submit" form="hook-form">
-              {confirmButtonTag}
-            </Button>
-          </ButtonContainer>
+            <ButtonContainer>
+              <Button onClick={() => toggleModalState()}>Cancelar</Button>
+              <Button type="submit" form="hook-form">
+                {confirmButtonTag}
+              </Button>
+            </ButtonContainer>
+          </div>
         </MainContainer>
       )}
     </Container>
