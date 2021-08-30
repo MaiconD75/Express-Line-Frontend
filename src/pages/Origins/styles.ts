@@ -36,6 +36,10 @@ export const Container = styled.div`
       &:nth-child(3) > div:nth-child(1) {
         width: 100%;
       }
+
+      &:nth-child(2) > div:nth-child(2) {
+        display: none;
+      }
     }
   }
 `;

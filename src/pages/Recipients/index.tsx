@@ -1,11 +1,19 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { Form } from '@unform/web';
+import { MenuItem } from '@material-ui/core';
+import api from '../../services/api';
+import statesList from '../../utils/statesList';
+import { createOrUpdateEntity } from '../../services/apiMethods';
 import { RecipientData } from '../../hooks/RecipientsContextx';
+import { useModal } from '../../hooks/ModalContext';
 
 import ActionButton from '../../components/ActionButton';
 import Button from '../../components/Button';
+import Input from '../../components/Input';
+import Modal from '../../components/Modal';
 import SearchBar from '../../components/SearchBar';
+import Select from '../../components/Select';
 import SideBar from '../../components/SideBar';
 import Table from '../../components/Table';
 import TableHead from '../../components/Table/TableHead';
@@ -20,16 +28,13 @@ import {
   HeadContainer,
   MainContainer,
 } from './styles';
-import api from '../../services/api';
-import Modal from '../../components/Modal';
-import Input from '../../components/Input';
-import { useModal } from '../../hooks/ModalContext';
-import { createOrUpdateEntity } from '../../services/apiMethods';
 
 const Recipients: React.FC = () => {
   const [recipients, setRecipients] = useState<RecipientData[]>([]);
+  const [selectedState, setSelectedState] = useState('');
   const [initialData, setInitialData] = useState<{
     id?: string;
+    state?: string;
   }>({});
 
   const { toggleModalState } = useModal();
@@ -37,6 +42,10 @@ const Recipients: React.FC = () => {
   useEffect(() => {
     api.get('/recipients').then(response => setRecipients(response.data));
   }, []);
+
+  useEffect(() => {
+    setSelectedState('');
+  }, [toggleModalState]);
 
   const handleOpenForm = useCallback(
     (buttonTag: string, data?: RecipientData): void => {
@@ -93,7 +102,17 @@ const Recipients: React.FC = () => {
           </div>
           <div>
             <Input name="city" placeholder="Cidade" />
-            <Input name="state" placeholder="Estado" />
+            <Input name="state" placeholder="Estado" value={selectedState} />
+            <Select
+              value={selectedState || initialData.state}
+              onChange={e => setSelectedState(e.target.value as string)}
+            >
+              {statesList.map(state => (
+                <MenuItem key={state} value={state}>
+                  {state}
+                </MenuItem>
+              ))}
+            </Select>
             <Input name="zip_code" placeholder="CEP" />
           </div>
           <div>
