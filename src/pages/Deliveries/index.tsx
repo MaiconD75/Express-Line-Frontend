@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 
+import { MenuItem } from '@material-ui/core';
 import FormatAddres from '../../utils/FormatAddres';
 
 import { DeliverymanData } from '../../hooks/DeliverymenContextx';
@@ -24,6 +25,7 @@ import {
   HeadContainer,
   MainContainer,
   StatusContainer,
+  StatusSelect,
 } from './styles';
 import api from '../../services/api';
 
@@ -41,11 +43,11 @@ export interface DeliveryData {
 
 const Deliveries: React.FC = () => {
   const [deliveries, setDeliveries] = useState<DeliveryData[]>([]);
+  const [selectedStatus, setSelectedStatus] = useState('none');
 
   useEffect(() => {
     api.get('/deliveries').then(response => setDeliveries(response.data));
   }, []);
-
   return (
     <Container>
       <SideBar selectedTab="delivery" />
@@ -64,13 +66,16 @@ const Deliveries: React.FC = () => {
               <th>Endereço de estoque</th>
               <th>
                 <canvas />
-                <select name="status" id="status">
-                  <option value="none">Status</option>
-                  <option value="delivered">Entregue</option>
-                  <option value="forwarded">Encaminhado</option>
-                  <option value="pending">Pendente</option>
-                  <option value="canceled">Cancelado</option>
-                </select>
+                <StatusSelect
+                  value={selectedStatus}
+                  onChange={e => setSelectedStatus(e.target.value as string)}
+                >
+                  <MenuItem value="none">Status</MenuItem>
+                  <MenuItem value="delivered">Entregue</MenuItem>
+                  <MenuItem value="forwarded">Encaminhado</MenuItem>
+                  <MenuItem value="pending">Pendente</MenuItem>
+                  <MenuItem value="canceled">Cancelado</MenuItem>
+                </StatusSelect>
               </th>
             </TableHead>
             {deliveries.map(delivery => {

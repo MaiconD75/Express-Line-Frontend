@@ -1,5 +1,6 @@
-import { ButtonHTMLAttributes } from 'react';
 import styled from 'styled-components';
+import { Select } from '@material-ui/core';
+import { ButtonHTMLAttributes } from 'react';
 
 interface ActionButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   color: string;
@@ -44,4 +45,32 @@ export const MainContainer = styled.div`
 export const StatusContainer = styled.td`
   display: flex;
   align-items: center;
+`;
+
+export const StatusSelect = styled(Select)`
+  box-sizing: border-box;
+  position: relative;
+
+  > div {
+    box-sizing: content-box;
+    padding: 0 8px;
+  }
+
+  &,
+  > input {
+    font: 700 16px Poppins, sans-serif !important;
+    color: #7f7f7f !important;
+  }
+
+  align-self: center;
+  margin-right: auto;
+
+  &:before,
+  &:after {
+    display: none;
+  }
+
+  > div:focus {
+    background-color: transparent;
+  }
 `;
