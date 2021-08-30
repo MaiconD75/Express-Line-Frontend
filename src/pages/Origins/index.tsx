@@ -3,10 +3,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Form } from '@unform/web';
 import { MenuItem } from '@material-ui/core';
 import api from '../../services/api';
+import statesList from '../../utils/statesList';
 import { createOrUpdateEntity } from '../../services/apiMethods';
 import { OriginData } from '../../hooks/OriginsContextx';
 import { useModal } from '../../hooks/ModalContext';
-import statesList from '../../utils/StatesList';
 
 import ActionButton from '../../components/ActionButton';
 import Button from '../../components/Button';

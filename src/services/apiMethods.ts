@@ -11,9 +11,3 @@ export const createOrUpdateEntity = async <T extends { id?: string }>(
 
   return reponse.data;
 };
-
-export const getEntity = async <T>(entity: string): Promise<T> => {
-  const response = await api.get(`/${entity}`);
-
-  return response.data;
-};
