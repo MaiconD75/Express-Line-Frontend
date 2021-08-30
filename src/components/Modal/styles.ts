@@ -58,7 +58,7 @@ export const MainContainer = styled.div`
 
 export const ButtonContainer = styled.div`
   width: 100%;
-  margin-top: 40px;
+  margin-top: 32px;
 
   display: flex;
   flex-direction: row !important;
