@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback } from 'react';
 
 import { MenuItem } from '@material-ui/core';
 
-
 import api from '../../services/api';
 import FormatAddres from '../../utils/FormatAddres';
 import { DeliverymanData } from '../Deliverymen';
