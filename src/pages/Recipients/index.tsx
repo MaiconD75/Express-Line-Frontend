@@ -1,8 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+
+import { Form } from '@unform/web';
+import { MenuItem } from '@material-ui/core';
+import api from '../../services/api';
+import statesList from '../../utils/statesList';
+import { createOrUpdateEntity } from '../../services/apiMethods';
+import { useModal } from '../../hooks/ModalContext';
 
 import ActionButton from '../../components/ActionButton';
 import Button from '../../components/Button';
+import Input from '../../components/Input';
+import Modal from '../../components/Modal';
 import SearchBar from '../../components/SearchBar';
+import Select from '../../components/Select';
 import SideBar from '../../components/SideBar';
 import Table from '../../components/Table';
 import TableHead from '../../components/Table/TableHead';
@@ -17,7 +27,6 @@ import {
   HeadContainer,
   MainContainer,
 } from './styles';
-import api from '../../services/api';
 
 export interface RecipientData {
   id: string;
@@ -32,17 +41,104 @@ export interface RecipientData {
 
 const Recipients: React.FC = () => {
   const [recipients, setRecipients] = useState<RecipientData[]>([]);
+  const [selectedState, setSelectedState] = useState('');
+  const [initialData, setInitialData] = useState<{
+    id?: string;
+    state?: string;
+  }>({});
+
+  const { toggleModalState } = useModal();
 
   useEffect(() => {
     api.get('/recipients').then(response => setRecipients(response.data));
   }, []);
 
+  useEffect(() => {
+    setSelectedState('');
+  }, [toggleModalState]);
+
+  const handleOpenForm = useCallback(
+    (buttonTag: string, data?: RecipientData): void => {
+      setInitialData(data || {});
+      toggleModalState(buttonTag);
+    },
+    [toggleModalState],
+  );
+
+  const handleSubmit = useCallback(
+    async (newData: RecipientData) => {
+      const newRecipient = await createOrUpdateEntity(
+        initialData as RecipientData,
+        newData,
+        'recipients',
+      );
+
+      setRecipients(allRecipients => {
+        if (initialData.id) {
+          return allRecipients.map(recipient =>
+            recipient.id === newRecipient.id ? newRecipient : recipient,
+          );
+        }
+
+        return [...allRecipients, newRecipient];
+      });
+
+      toggleModalState();
+    },
+    [initialData, toggleModalState],
+  );
+
+  const handleDeleteItem = useCallback(
+    async (id: string) => {
+      await api.delete(`/recipients/${id}`);
+
+      setRecipients(recipients.filter(recipient => recipient.id !== id));
+    },
+    [recipients],
+  );
+
   return (
     <Container>
+      <Modal>
+        <h1>Adicionar destinatário...</h1>
+
+        <Form id="hook-form" onSubmit={handleSubmit} initialData={initialData}>
+          <div>
+            <Input name="name" placeholder="Nome" />
+          </div>
+          <div>
+            <Input name="street" placeholder="Rua/Avenida" />
+            <Input name="number" placeholder="Número" type="number" />
+          </div>
+          <div>
+            <Input name="city" placeholder="Cidade" />
+            <Input name="state" placeholder="Estado" value={selectedState} />
+            <Select
+              value={selectedState || initialData.state}
+              onChange={e => setSelectedState(e.target.value as string)}
+            >
+              {statesList.map(state => (
+                <MenuItem key={state} value={state}>
+                  {state}
+                </MenuItem>
+              ))}
+            </Select>
+            <Input name="zip_code" placeholder="CEP" />
+          </div>
+          <div>
+            <Input name="complement" placeholder="Complemento" />
+          </div>
+        </Form>
+      </Modal>
       <SideBar selectedTab="recipient" />
       <PageContainer>
         <HeadContainer>
-          <Button style={{ width: '16vw' }}>Adicionar destinatário</Button>
+          <Button
+            style={{ width: '16vw' }}
+            onClick={() => handleOpenForm('Adicionar')}
+          >
+            Adicionar destinatário
+          </Button>
           <SearchBar />
         </HeadContainer>
 
@@ -81,10 +177,16 @@ const Recipients: React.FC = () => {
                     <p>{recipient.zip_code}</p>
                   </td>
                   <td>
-                    <ActionButton color="#ffc600">
+                    <ActionButton
+                      color="#ffc600"
+                      onClick={() => handleOpenForm('Atualizar', recipient)}
+                    >
                       <img src={editImg} alt="Editar" />
                     </ActionButton>
-                    <ActionButton color="#bd1111">
+                    <ActionButton
+                      color="#bd1111"
+                      onClick={() => handleDeleteItem(recipient.id)}
+                    >
                       <img src={trashImg} alt="Excluir" />
                     </ActionButton>
                   </td>

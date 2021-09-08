@@ -4,12 +4,8 @@ import Button from '../Button';
 
 import { Container, MainContainer, ButtonContainer } from './styles';
 
-interface ModalProps {
-  confirmButtonTag: string;
-}
-
-const Modal: React.FC<ModalProps> = ({ confirmButtonTag, children }) => {
-  const { toggleModalState, isClosed } = useModal();
+const Modal: React.FC = ({ children }) => {
+  const { toggleModalState, isClosed, confirmButtonTag } = useModal();
 
   return (
     <Container isClosed={isClosed}>
@@ -17,14 +13,16 @@ const Modal: React.FC<ModalProps> = ({ confirmButtonTag, children }) => {
         <></>
       ) : (
         <MainContainer>
-          {children}
+          <div>
+            {children}
 
-          <ButtonContainer>
-            <Button onClick={() => toggleModalState()}>Cancelar</Button>
-            <Button type="submit" form="hook-form">
-              {confirmButtonTag}
-            </Button>
-          </ButtonContainer>
+            <ButtonContainer>
+              <Button onClick={() => toggleModalState()}>Cancelar</Button>
+              <Button type="submit" form="hook-form">
+                {confirmButtonTag}
+              </Button>
+            </ButtonContainer>
+          </div>
         </MainContainer>
       )}
     </Container>

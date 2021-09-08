@@ -1,13 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 
+import { MenuItem } from '@material-ui/core';
+
+
+import api from '../../services/api';
 import FormatAddres from '../../utils/FormatAddres';
-
 import { DeliverymanData } from '../Deliverymen';
 import { RecipientData } from '../Recipients';
 import { OriginData } from '../Origins';
 
 import ActionButton from '../../components/ActionButton';
 import Button from '../../components/Button';
+import Form from '../../components/Form';
+import Input from '../../components/Input';
+import Modal from '../../components/Modal';
 import SearchBar from '../../components/SearchBar';
 import SideBar from '../../components/SideBar';
 import StatusTag from '../../components/StatusTag';
@@ -24,8 +30,12 @@ import {
   HeadContainer,
   MainContainer,
   StatusContainer,
+  StatusSelect,
+  OptionsSelectContainer,
+  OptionsSelect,
+  InfoContainer,
 } from './styles';
-import api from '../../services/api';
+import { useModal } from '../../hooks/ModalContext';
 
 export interface DeliveryData {
   id: string;
@@ -41,17 +51,121 @@ export interface DeliveryData {
 
 const Deliveries: React.FC = () => {
   const [deliveries, setDeliveries] = useState<DeliveryData[]>([]);
+  const [selectedStatus, setSelectedStatus] = useState('none');
+
+  const { toggleModalState } = useModal();
 
   useEffect(() => {
     api.get('/deliveries').then(response => setDeliveries(response.data));
   }, []);
 
+  const handleOpenModal = useCallback(
+    (buttonTag: string) => {
+      toggleModalState(buttonTag);
+    },
+    [toggleModalState],
+  );
+
   return (
     <Container>
+      <Modal>
+        <h1>Adicionando Entrega...</h1>
+
+        <Form id="hook-form" onSubmit={() => alert('ola')}>
+          <Input name="product" placeholder="Produto" />
+          <div>
+            <Input hidden name="deliveryman_id" />
+            <OptionsSelectContainer>
+              <OptionsSelect value="Item">
+                <MenuItem value="Item">Item</MenuItem>
+              </OptionsSelect>
+              <InfoContainer>
+                <div>
+                  <span>Email:</span>
+                  <span>VPeixoto@gmail.com</span>
+                </div>
+                <div>
+                  <span>Entregas Concluidas:</span>
+                  <span>191</span>
+                </div>
+                <div>
+                  <span>Entregas Canceladas:</span>
+                  <span>12</span>
+                </div>
+              </InfoContainer>
+            </OptionsSelectContainer>
+            <Input hidden name="origin_id" />
+            <OptionsSelectContainer>
+              <OptionsSelect value="Item">
+                <MenuItem value="Item">Item</MenuItem>
+              </OptionsSelect>
+              <InfoContainer>
+                <div>
+                  <span>Número:</span>
+                  <span>753</span>
+                </div>
+                <div>
+                  <span>Cidade:</span>
+                  <span>Mossoró</span>
+                </div>
+                <div>
+                  <span>Estado:</span>
+                  <span>RN</span>
+                </div>
+                <div>
+                  <span>Complemento:</span>
+                  <span>Apt: 205</span>
+                </div>
+                <div>
+                  <span>CEP:</span>
+                  <span>12345-678</span>
+                </div>
+              </InfoContainer>
+            </OptionsSelectContainer>
+            <Input hidden name="recipient_id" />
+            <OptionsSelectContainer>
+              <OptionsSelect value="Item">
+                <MenuItem value="Item">Item</MenuItem>
+              </OptionsSelect>
+              <InfoContainer>
+                <div>
+                  <span>Rua:</span>
+                  <span>Rua Gerivaldo Golveia</span>
+                </div>
+                <div>
+                  <span>Número::</span>
+                  <span>753</span>
+                </div>
+                <div>
+                  <span>Cidade:</span>
+                  <span>Mossoró</span>
+                </div>
+                <div>
+                  <span>Estado:</span>
+                  <span>RN</span>
+                </div>
+                <div>
+                  <span>Complemento:</span>
+                  <span>Apt: 205</span>
+                </div>
+                <div>
+                  <span>CEP:</span>
+                  <span>12345-678</span>
+                </div>
+              </InfoContainer>
+            </OptionsSelectContainer>
+          </div>
+        </Form>
+      </Modal>
       <SideBar selectedTab="delivery" />
       <PageContainer>
         <HeadContainer>
-          <Button style={{ width: '16vw' }}>Adicionar entrega</Button>
+          <Button
+            style={{ width: '16vw' }}
+            onClick={() => handleOpenModal('Adicionar')}
+          >
+            Adicionar entrega
+          </Button>
           <SearchBar />
         </HeadContainer>
 
@@ -64,13 +178,16 @@ const Deliveries: React.FC = () => {
               <th>Endereço de estoque</th>
               <th>
                 <canvas />
-                <select name="status" id="status">
-                  <option value="none">Status</option>
-                  <option value="delivered">Entregue</option>
-                  <option value="forwarded">Encaminhado</option>
-                  <option value="pending">Pendente</option>
-                  <option value="canceled">Cancelado</option>
-                </select>
+                <StatusSelect
+                  value={selectedStatus}
+                  onChange={e => setSelectedStatus(e.target.value as string)}
+                >
+                  <MenuItem value="none">Status</MenuItem>
+                  <MenuItem value="delivered">Entregue</MenuItem>
+                  <MenuItem value="forwarded">Encaminhado</MenuItem>
+                  <MenuItem value="pending">Pendente</MenuItem>
+                  <MenuItem value="canceled">Cancelado</MenuItem>
+                </StatusSelect>
               </th>
             </TableHead>
             {deliveries.map(delivery => {

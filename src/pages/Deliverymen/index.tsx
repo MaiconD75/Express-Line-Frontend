@@ -1,7 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
+
+import api from '../../services/api';
+import getInitials from '../../utils/getInitials';
+
 
 import { createOrUpdateEntity } from '../../services/apiMethods';
-import getInitials from '../../utils/getInitials';
+
 import { getFilesUrl } from '../../utils/getFilesUrl';
 import { useModal } from '../../hooks/ModalContext';
 
@@ -29,7 +33,6 @@ import {
   ImageContainer,
   AvatarContainer,
 } from './styles';
-import api from '../../services/api';
 
 export interface DeliverymanData {
   avatar: string;
@@ -42,71 +45,130 @@ const Deliverymen: React.FC = () => {
   const { toggleModalState } = useModal();
 
   const [deliverymen, setDeliverymen] = useState<DeliverymanData[]>([]);
-  const [initialData, setInitialData] = useState({});
+  const [initialData, setInitialData] = useState<{
+    id?: string;
+    avatar?: string;
+  }>({});
+  const [newAvatarData, setNewAvatarData] = useState<Blob>({} as Blob);
+  const [newAvatarUrl, setNewAvatarUrl] = useState('');
 
   useEffect(() => {
     api.get('/deliverymen').then(response => setDeliverymen(response.data));
   }, []);
 
-  function handleOpenModal(data?: DeliverymanData): void {
-    setInitialData(data || {});
-    toggleModalState();
-  }
+  useEffect(() => {
+    setNewAvatarUrl('');
+  }, [setNewAvatarUrl, toggleModalState]);
 
-  async function handleSubmit(newDeliveryman: DeliverymanData): Promise<void> {
-    createOrUpdateEntity<DeliverymanData>(
-      initialData as DeliverymanData,
-      newDeliveryman,
-      'deliverymen',
-    ).then(() => {
-      setDeliverymen(allDeliverymen =>
-        initialData
-          ? allDeliverymen.map(deliveryman =>
-              deliveryman.id === newDeliveryman.id
-                ? newDeliveryman
-                : deliveryman,
-            )
-          : { ...allDeliverymen, newDeliveryman },
+  const handleOpenForm = useCallback(
+    (buttonTag: string, data?: DeliverymanData): void => {
+      setInitialData(data || {});
+      toggleModalState(buttonTag);
+    },
+    [toggleModalState],
+  );
+
+  const handleAvatarChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>): void => {
+      if (e.target.files && e.target.files[0]) {
+        setNewAvatarData(e.target.files[0]);
+
+        setNewAvatarUrl(URL.createObjectURL(e.target.files[0]));
+      }
+    },
+    [setNewAvatarData, setNewAvatarUrl],
+  );
+
+  const handleSubmit = useCallback(
+    async (newData: DeliverymanData): Promise<void> => {
+      const newDeliveryman = await createOrUpdateEntity<DeliverymanData>(
+        initialData as DeliverymanData,
+        newData,
+        'deliverymen',
       );
-    });
 
-    toggleModalState();
-  }
+      setDeliverymen(allDeliverymen => {
+        if (initialData.id) {
+          return allDeliverymen.map(deliveryman =>
+            deliveryman.id === newDeliveryman.id ? newDeliveryman : deliveryman,
+          );
+        }
+
+        return [...allDeliverymen, newDeliveryman];
+      });
+
+      const avatarData = new FormData();
+      avatarData.append('avatar', newAvatarData);
+
+      await api
+        .patch(`/deliverymen/images/${newDeliveryman.id}`, avatarData)
+        .then(response => {
+          setDeliverymen(allDeliverymen =>
+            allDeliverymen.map(deliveryman =>
+              deliveryman.id === response.data.id ? response.data : deliveryman,
+            ),
+          );
+        });
+
+      toggleModalState();
+    },
+    [initialData, toggleModalState, newAvatarData],
+  );
+
+  const handleDeleteItem = useCallback(
+    async (id: string): Promise<void> => {
+      await api.delete(`/deliverymen/${id}`);
+
+      setDeliverymen(deliverymen.filter(deliveryman => deliveryman.id !== id));
+    },
+    [deliverymen],
+  );
 
   return (
     <Container>
-      <Modal confirmButtonTag="Contratar">
-        <div>
-          <h1>Contratando...</h1>
-          <Form
-            id="hook-form"
-            onSubmit={handleSubmit}
-            initialData={initialData}
+      <Modal>
+        <h1>Contratando...</h1>
+        <Form id="hook-form" onSubmit={handleSubmit} initialData={initialData}>
+          <AvatarContainer
+            htmlFor="avatar"
+            hasImage={!!newAvatarUrl || !!initialData.avatar}
           >
-            <AvatarContainer htmlFor="avatar">
-              <img src={userImg} alt="Adicionar foto" />
-              <p>Adcionar foto</p>
-              <input type="file" id="avatar" />
-            </AvatarContainer>
-            <Input
-              name="name"
-              label="Nome"
-              icon={userImg}
-              placeholder="Nome do funcionário"
+            <img
+              src={
+                newAvatarUrl ||
+                (initialData.avatar ? getFilesUrl(initialData.avatar) : userImg)
+              }
+              alt="Adicionar foto"
             />
-            <Input
-              name="email"
-              label="Email"
-              icon={emailImg}
-              placeholder="Email do funcionário"
+            <p>Adcionar foto</p>
+            <input
+              type="file"
+              accept="image/*"
+              id="avatar"
+              onChange={handleAvatarChange}
             />
-          </Form>
-        </div>
+          </AvatarContainer>
+          <Input
+            name="name"
+            label="Nome"
+            icon={userImg}
+            placeholder="Nome do funcionário"
+          />
+          <Input
+            name="email"
+            label="Email"
+            icon={emailImg}
+            placeholder="Email do funcionário"
+          />
+        </Form>
       </Modal>
       <SideBar selectedTab="deliveryman" />
       <PageContainer>
         <HeadContainer>
-          <Button onClick={() => handleOpenModal()} style={{ width: '16vw' }}>
+          <Button
+            onClick={() => handleOpenForm('Contratar')}
+            style={{ width: '16vw' }}
+          >
             Contratar
           </Button>
           <SearchBar />
@@ -159,12 +221,15 @@ const Deliverymen: React.FC = () => {
                     <ActionButton
                       color="#ffc600"
                       onClick={() => {
-                        handleOpenModal(deliveryman);
+                        handleOpenForm('Atualizar', deliveryman);
                       }}
                     >
                       <img src={editImg} alt="Editar" />
                     </ActionButton>
-                    <ActionButton color="#bd1111">
+                    <ActionButton
+                      color="#bd1111"
+                      onClick={() => handleDeleteItem(deliveryman.id)}
+                    >
                       <img src={fireImg} alt="Excluir" />
                     </ActionButton>
                   </td>

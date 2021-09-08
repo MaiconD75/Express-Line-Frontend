@@ -1,8 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+
+import { Form } from '@unform/web';
+import { MenuItem } from '@material-ui/core';
+import api from '../../services/api';
+import statesList from '../../utils/statesList';
+import { createOrUpdateEntity } from '../../services/apiMethods';
+import { useModal } from '../../hooks/ModalContext';
 
 import ActionButton from '../../components/ActionButton';
 import Button from '../../components/Button';
+import Input from '../../components/Input';
+import Modal from '../../components/Modal';
 import SearchBar from '../../components/SearchBar';
+import Select from '../../components/Select';
 import SideBar from '../../components/SideBar';
 import Table from '../../components/Table';
 import TableHead from '../../components/Table/TableHead';
@@ -17,7 +27,6 @@ import {
   HeadContainer,
   MainContainer,
 } from './styles';
-import api from '../../services/api';
 
 export interface OriginData {
   id: string;
@@ -31,17 +40,100 @@ export interface OriginData {
 
 const Origins: React.FC = () => {
   const [origins, setOrigins] = useState<OriginData[]>([]);
+  const [selectedState, setSelectedState] = useState('');
+  const [initialData, setInitialData] = useState<{
+    id?: string;
+    state?: string;
+  }>({});
+
+  const { toggleModalState } = useModal();
 
   useEffect(() => {
     api.get('/origins').then(response => setOrigins(response.data));
   }, []);
 
+  useEffect(() => {
+    setSelectedState('');
+  }, [toggleModalState]);
+
+  const handleOpenForm = useCallback(
+    (buttonTag: string, data?: OriginData): void => {
+      setInitialData(data || {});
+      toggleModalState(buttonTag);
+    },
+    [toggleModalState],
+  );
+
+  const handleSubmit = useCallback(
+    async (newData: OriginData) => {
+      const newOrigin = await createOrUpdateEntity<OriginData>(
+        initialData as OriginData,
+        newData,
+        'origins',
+      );
+
+      setOrigins(allOrigins => {
+        if (initialData.id) {
+          return allOrigins.map(origin =>
+            origin.id === newOrigin.id ? newOrigin : origin,
+          );
+        }
+        return [...allOrigins, newOrigin];
+      });
+
+      toggleModalState();
+    },
+    [initialData, toggleModalState],
+  );
+
+  const handleDeleteItem = useCallback(
+    async (id: string) => {
+      await api.delete(`/origins/${id}`);
+
+      setOrigins(origins.filter(origin => origin.id !== id));
+    },
+    [origins],
+  );
+
   return (
     <Container>
+      <Modal>
+        <h1>Registrando estoque...</h1>
+
+        <Form id="hook-form" onSubmit={handleSubmit} initialData={initialData}>
+          <div>
+            <Input name="street" placeholder="Rua/Avenida" />
+            <Input name="number" placeholder="Número" type="number" />
+          </div>
+          <div>
+            <Input name="city" placeholder="Cidade" />
+            <Input name="state" placeholder="Estado" value={selectedState} />
+            <Select
+              value={selectedState || initialData.state}
+              onChange={e => setSelectedState(e.target.value as string)}
+            >
+              {statesList.map(state => (
+                <MenuItem key={state} value={state}>
+                  {state}
+                </MenuItem>
+              ))}
+            </Select>
+            <Input name="zip_code" placeholder="CEP" />
+          </div>
+          <div>
+            <Input name="complement" placeholder="Complemento" />
+          </div>
+        </Form>
+      </Modal>
       <SideBar selectedTab="origin" />
       <PageContainer>
         <HeadContainer>
-          <Button style={{ width: '16vw' }}>Registrar estoque</Button>
+          <Button
+            style={{ width: '16vw' }}
+            onClick={() => handleOpenForm('Registrar')}
+          >
+            Registrar estoque
+          </Button>
           <SearchBar />
         </HeadContainer>
 
@@ -73,15 +165,21 @@ const Origins: React.FC = () => {
                   <td>
                     <p>{origin.number}</p>
                   </td>
-                  <td>{origin.complement}</td>
+                  <td>{origin.complement || 'Sem complemento'}</td>
                   <td>
                     <p>{origin.zip_code}</p>
                   </td>
                   <td>
-                    <ActionButton color="#ffc600">
+                    <ActionButton
+                      color="#ffc600"
+                      onClick={() => handleOpenForm('Atualizar', origin)}
+                    >
                       <img src={editImg} alt="Editar" />
                     </ActionButton>
-                    <ActionButton color="#bd1111">
+                    <ActionButton
+                      color="#bd1111"
+                      onClick={() => handleDeleteItem(origin.id)}
+                    >
                       <img src={trashImg} alt="Excluir" />
                     </ActionButton>
                   </td>

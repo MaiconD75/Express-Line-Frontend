@@ -1,8 +1,12 @@
 import { desaturate, transparentize, saturate, darken } from 'polished';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 interface ImageContainerProps {
   nameColor: string;
+}
+
+interface AvatarContainerProps {
+  hasImage: boolean;
 }
 
 export const Container = styled.div`
@@ -78,7 +82,7 @@ export const ImageContainer = styled.div<ImageContainerProps>`
     color: ${props => props.nameColor};
   }
 
-  img {
+  > img {
     object-fit: cover;
     width: 56px;
     height: 56px;
@@ -86,12 +90,13 @@ export const ImageContainer = styled.div<ImageContainerProps>`
   }
 `;
 
-export const AvatarContainer = styled.label`
+export const AvatarContainer = styled.label<AvatarContainerProps>`
   width: 256px;
   height: 256px;
   border-radius: 50%;
   border: none;
   background-color: #eeeeee;
+  object-fit: cover;
 
   display: flex;
   flex-direction: column;
@@ -102,6 +107,15 @@ export const AvatarContainer = styled.label`
   transition: 0.2s linear;
 
   img {
+    object-fit: cover;
+
+    ${props =>
+      props.hasImage &&
+      css`
+        height: calc(100% - 64px);
+        width: 100%;
+      `}
+
     margin: auto;
 
     transition: 0.2s linear;
@@ -110,6 +124,7 @@ export const AvatarContainer = styled.label`
   p {
     height: 64px;
     width: 100%;
+    box-sizing: border-box;
 
     padding: 0 64px;
 
@@ -138,7 +153,7 @@ export const AvatarContainer = styled.label`
     }
 
     img {
-      opacity: 60%;
+      filter: brightness(90%);
     }
   }
 `;
