@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, ChangeEvent } from 'react';
 
 import { MenuItem } from '@material-ui/core';
 
@@ -35,6 +35,7 @@ import {
   InfoContainer,
 } from './styles';
 import { useModal } from '../../hooks/ModalContext';
+import { createOrUpdateEntity } from '../../services/apiMethods';
 
 export interface DeliveryData {
   id: string;
@@ -48,9 +49,67 @@ export interface DeliveryData {
   origin: OriginData;
 }
 
+interface EventData {
+  name?: string | undefined;
+  value: unknown;
+}
+
 const Deliveries: React.FC = () => {
   const [deliveries, setDeliveries] = useState<DeliveryData[]>([]);
   const [selectedStatus, setSelectedStatus] = useState('none');
+
+  const [deliverymenList, setDeliverymenList] = useState<DeliverymanData[]>([]);
+  const [originsList, setOriginsList] = useState<OriginData[]>([]);
+  const [recipientsList, setRecipientsList] = useState<RecipientData[]>([]);
+
+  const [selectedDeliveryman, setSelectedDeliveryman] =
+    useState<DeliverymanData>({} as DeliverymanData);
+  const [selectedOrigin, setSelectedOrigin] = useState<OriginData>(
+    {} as OriginData,
+  );
+  const [selectedRecipient, setSelectedRecipient] = useState<RecipientData>(
+    {} as RecipientData,
+  );
+
+  const [initialData, setInitialData] = useState<{
+    id?: string;
+    deliveryman_id?: string;
+    origin_id?: string;
+    recipient_id?: string;
+  }>({});
+
+  const handleChangeSelectedDeliveryman = useCallback(
+    (e: ChangeEvent<EventData>) => {
+      setSelectedDeliveryman(
+        deliverymenList.find(deliveryman => {
+          return deliveryman.id === (e.target.value as string);
+        }) || ({} as DeliverymanData),
+      );
+    },
+    [deliverymenList],
+  );
+
+  const handleChangeSelectedOrigin = useCallback(
+    (e: ChangeEvent<EventData>) => {
+      setSelectedOrigin(
+        originsList.find(origin => {
+          return origin.id === (e.target.value as string);
+        }) || ({} as OriginData),
+      );
+    },
+    [originsList],
+  );
+
+  const handleChangeSelectedRecipient = useCallback(
+    (e: ChangeEvent<EventData>) => {
+      setSelectedRecipient(
+        recipientsList.find(recipient => {
+          return recipient.id === (e.target.value as string);
+        }) || ({} as RecipientData),
+      );
+    },
+    [recipientsList],
+  );
 
   const { toggleModalState } = useModal();
 
@@ -59,10 +118,55 @@ const Deliveries: React.FC = () => {
   }, []);
 
   const handleOpenModal = useCallback(
-    (buttonTag: string) => {
+    async (buttonTag: string, data?: DeliveryData) => {
+      await api
+        .get('/deliverymen')
+        .then(response => setDeliverymenList(response.data));
+      await api.get('/origins').then(response => setOriginsList(response.data));
+      await api
+        .get('/recipients')
+        .then(response => setRecipientsList(response.data));
+
+      setSelectedDeliveryman(data?.deliveryman || ({} as DeliverymanData));
+      setSelectedOrigin(data?.origin || ({} as OriginData));
+      setSelectedRecipient(data?.recipient || ({} as RecipientData));
+
+      setInitialData(data || {});
       toggleModalState(buttonTag);
     },
     [toggleModalState],
+  );
+
+  const handleSubmit = useCallback(
+    async (newData: DeliveryData) => {
+      const newDelivery = await createOrUpdateEntity(
+        initialData as DeliveryData,
+        newData,
+        'deliveries',
+      );
+
+      setDeliveries(allDeliveries => {
+        if (initialData.id) {
+          return allDeliveries.map(delivery =>
+            delivery.id === newDelivery.id ? newDelivery : delivery,
+          );
+        }
+
+        return [...allDeliveries, newDelivery];
+      });
+
+      toggleModalState();
+    },
+    [initialData, toggleModalState],
+  );
+
+  const handleDeleteItem = useCallback(
+    async (id: string) => {
+      await api.delete(`/deliveries/${id}`);
+
+      setDeliveries(deliveries.filter(delivery => delivery.id !== id));
+    },
+    [deliveries],
   );
 
   return (
@@ -70,18 +174,35 @@ const Deliveries: React.FC = () => {
       <Modal>
         <h1>Adicionando Entrega...</h1>
 
-        <Form id="hook-form" onSubmit={() => alert('ola')}>
+        <Form id="hook-form" initialData={initialData} onSubmit={handleSubmit}>
           <Input name="product" placeholder="Produto" />
           <div>
-            <Input hidden name="deliveryman_id" />
+            <Input
+              readOnly
+              defaultValue={selectedDeliveryman.id || ''}
+              hidden
+              name="deliveryman_id"
+            />
             <OptionsSelectContainer>
-              <OptionsSelect value="Item">
-                <MenuItem value="Item">Item</MenuItem>
+              <OptionsSelect
+                onChange={handleChangeSelectedDeliveryman}
+                value={
+                  selectedDeliveryman.id || initialData.deliveryman_id || ''
+                }
+              >
+                <MenuItem value="" disabled>
+                  <em>Entregador</em>
+                </MenuItem>
+                {deliverymenList.map(deliveryman => (
+                  <MenuItem key={deliveryman.id} value={deliveryman.id}>
+                    {deliveryman.name}
+                  </MenuItem>
+                ))}
               </OptionsSelect>
               <InfoContainer>
                 <div>
                   <span>Email:</span>
-                  <span>VPeixoto@gmail.com</span>
+                  <span>{selectedDeliveryman.email}</span>
                 </div>
                 <div>
                   <span>Entregas Concluidas:</span>
@@ -93,63 +214,95 @@ const Deliveries: React.FC = () => {
                 </div>
               </InfoContainer>
             </OptionsSelectContainer>
-            <Input hidden name="origin_id" />
+
+            <Input
+              readOnly
+              defaultValue={selectedOrigin.id || ''}
+              hidden
+              name="origin_id"
+            />
             <OptionsSelectContainer>
-              <OptionsSelect value="Item">
-                <MenuItem value="Item">Item</MenuItem>
+              <OptionsSelect
+                onChange={handleChangeSelectedOrigin}
+                value={selectedOrigin.id || initialData.origin_id || ''}
+              >
+                <MenuItem value="" disabled>
+                  <em>Estoque</em>
+                </MenuItem>
+                {originsList.map(origin => (
+                  <MenuItem key={origin.id} value={origin.id}>
+                    {origin.street}
+                  </MenuItem>
+                ))}
               </OptionsSelect>
               <InfoContainer>
                 <div>
                   <span>Número:</span>
-                  <span>753</span>
+                  <span>{selectedOrigin.number}</span>
                 </div>
                 <div>
                   <span>Cidade:</span>
-                  <span>Mossoró</span>
+                  <span>{selectedOrigin.city}</span>
                 </div>
                 <div>
                   <span>Estado:</span>
-                  <span>RN</span>
+                  <span>{selectedOrigin.state}</span>
                 </div>
                 <div>
                   <span>Complemento:</span>
-                  <span>Apt: 205</span>
+                  <span>{selectedOrigin.complement}</span>
                 </div>
                 <div>
                   <span>CEP:</span>
-                  <span>12345-678</span>
+                  <span>{selectedOrigin.zip_code}</span>
                 </div>
               </InfoContainer>
             </OptionsSelectContainer>
-            <Input hidden name="recipient_id" />
+
+            <Input
+              readOnly
+              defaultValue={selectedRecipient.id || ''}
+              hidden
+              name="recipient_id"
+            />
             <OptionsSelectContainer>
-              <OptionsSelect value="Item">
-                <MenuItem value="Item">Item</MenuItem>
+              <OptionsSelect
+                onChange={handleChangeSelectedRecipient}
+                value={selectedRecipient.id || initialData.recipient_id || ''}
+              >
+                <MenuItem value="" disabled>
+                  <em>Destinatário</em>
+                </MenuItem>
+                {recipientsList.map(recipient => (
+                  <MenuItem key={recipient.id} value={recipient.id}>
+                    {recipient.name}
+                  </MenuItem>
+                ))}
               </OptionsSelect>
               <InfoContainer>
                 <div>
                   <span>Rua:</span>
-                  <span>Rua Gerivaldo Golveia</span>
+                  <span>{selectedRecipient.street}</span>
                 </div>
                 <div>
-                  <span>Número::</span>
-                  <span>753</span>
+                  <span>Número:</span>
+                  <span>{selectedRecipient.number}</span>
                 </div>
                 <div>
                   <span>Cidade:</span>
-                  <span>Mossoró</span>
+                  <span>{selectedRecipient.city}</span>
                 </div>
                 <div>
                   <span>Estado:</span>
-                  <span>RN</span>
+                  <span>{selectedRecipient.state}</span>
                 </div>
                 <div>
                   <span>Complemento:</span>
-                  <span>Apt: 205</span>
+                  <span>{selectedRecipient.complement}</span>
                 </div>
                 <div>
                   <span>CEP:</span>
-                  <span>12345-678</span>
+                  <span>{selectedRecipient.zip_code}</span>
                 </div>
               </InfoContainer>
             </OptionsSelectContainer>
@@ -205,12 +358,14 @@ const Deliveries: React.FC = () => {
                     <ActionButton
                       color="#ffc600"
                       disabled={!!delivery.start_date}
+                      onClick={() => handleOpenModal('Atualizar', delivery)}
                     >
                       <img src={editImg} alt="Editar" />
                     </ActionButton>
                     <ActionButton
                       color="#bd1111"
                       disabled={!!delivery.start_date}
+                      onClick={() => handleDeleteItem(delivery.id)}
                     >
                       <img src={trashImg} alt="Excluir" />
                     </ActionButton>

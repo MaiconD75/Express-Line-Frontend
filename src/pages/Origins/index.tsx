@@ -107,11 +107,20 @@ const Origins: React.FC = () => {
           </div>
           <div>
             <Input name="city" placeholder="Cidade" />
-            <Input name="state" placeholder="Estado" value={selectedState} />
+            <Input
+              name="state"
+              placeholder="Estado"
+              defaultValue={selectedState || initialData.state}
+              readOnly
+            />
             <Select
-              value={selectedState || initialData.state}
+              displayEmpty
+              value={selectedState || initialData.state || ''}
               onChange={e => setSelectedState(e.target.value as string)}
             >
+              <MenuItem value="" disabled>
+                <em>UF</em>
+              </MenuItem>
               {statesList.map(state => (
                 <MenuItem key={state} value={state}>
                   {state}

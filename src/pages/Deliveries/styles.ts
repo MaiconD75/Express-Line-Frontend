@@ -40,7 +40,9 @@ export const OptionsSelectContainer = styled.div`
   box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.25);
 `;
 
-export const OptionsSelect = styled(Select)`
+export const OptionsSelect = styled(Select).attrs(() => ({
+  displayEmpty: true,
+}))`
   height: 48px;
   width: 100%;
   border-radius: 10px 10px 0 0;
@@ -133,6 +135,8 @@ export const HeadContainer = styled.div`
 export const MainContainer = styled.div`
   width: 100%;
   height: 100%;
+  overflow-y: scroll;
+  padding-bottom: 24px;
 
   th:nth-child(4),
   td:nth-child(4) {

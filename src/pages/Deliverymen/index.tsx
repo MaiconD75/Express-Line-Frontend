@@ -49,6 +49,7 @@ const Deliverymen: React.FC = () => {
     avatar?: string;
   }>({});
   const [newAvatarData, setNewAvatarData] = useState<Blob>({} as Blob);
+  const [changeAvatar, setChangeAvatar] = useState(false);
   const [newAvatarUrl, setNewAvatarUrl] = useState('');
 
   useEffect(() => {
@@ -73,6 +74,7 @@ const Deliverymen: React.FC = () => {
         setNewAvatarData(e.target.files[0]);
 
         setNewAvatarUrl(URL.createObjectURL(e.target.files[0]));
+        setChangeAvatar(true);
       }
     },
     [setNewAvatarData, setNewAvatarUrl],
@@ -96,22 +98,28 @@ const Deliverymen: React.FC = () => {
         return [...allDeliverymen, newDeliveryman];
       });
 
-      const avatarData = new FormData();
-      avatarData.append('avatar', newAvatarData);
+      if (changeAvatar) {
+        setChangeAvatar(false);
 
-      await api
-        .patch(`/deliverymen/images/${newDeliveryman.id}`, avatarData)
-        .then(response => {
-          setDeliverymen(allDeliverymen =>
-            allDeliverymen.map(deliveryman =>
-              deliveryman.id === response.data.id ? response.data : deliveryman,
-            ),
-          );
-        });
+        const avatarData = new FormData();
+        avatarData.append('avatar', newAvatarData);
+
+        await api
+          .patch(`/deliverymen/images/${newDeliveryman.id}`, avatarData)
+          .then(response => {
+            setDeliverymen(allDeliverymen =>
+              allDeliverymen.map(deliveryman =>
+                deliveryman.id === response.data.id
+                  ? response.data
+                  : deliveryman,
+              ),
+            );
+          });
+      }
 
       toggleModalState();
     },
-    [initialData, toggleModalState, newAvatarData],
+    [initialData, toggleModalState, newAvatarData, changeAvatar],
   );
 
   const handleDeleteItem = useCallback(

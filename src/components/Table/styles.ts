@@ -4,7 +4,6 @@ export const Container = styled.table`
   width: 100%;
   height: 100%;
   padding: 0 70px;
-  overflow-y: scroll;
 
   thead,
   tbody {
