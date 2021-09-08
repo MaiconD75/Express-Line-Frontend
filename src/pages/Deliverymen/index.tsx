@@ -2,8 +2,10 @@ import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
 import api from '../../services/api';
 import getInitials from '../../utils/getInitials';
+
+
 import { createOrUpdateEntity } from '../../services/apiMethods';
-import { DeliverymanData } from '../../hooks/DeliverymenContextx';
+
 import { getFilesUrl } from '../../utils/getFilesUrl';
 import { useModal } from '../../hooks/ModalContext';
 
@@ -31,6 +33,13 @@ import {
   ImageContainer,
   AvatarContainer,
 } from './styles';
+
+export interface DeliverymanData {
+  avatar: string;
+  name: string;
+  email: string;
+  id: string;
+}
 
 const Deliverymen: React.FC = () => {
   const { toggleModalState } = useModal();

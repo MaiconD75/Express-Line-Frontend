@@ -5,7 +5,6 @@ import { MenuItem } from '@material-ui/core';
 import api from '../../services/api';
 import statesList from '../../utils/statesList';
 import { createOrUpdateEntity } from '../../services/apiMethods';
-import { OriginData } from '../../hooks/OriginsContextx';
 import { useModal } from '../../hooks/ModalContext';
 
 import ActionButton from '../../components/ActionButton';
@@ -28,6 +27,16 @@ import {
   HeadContainer,
   MainContainer,
 } from './styles';
+
+export interface OriginData {
+  id: string;
+  city: string;
+  complement: string;
+  number: number;
+  state: string;
+  street: string;
+  zip_code: string;
+}
 
 const Origins: React.FC = () => {
   const [origins, setOrigins] = useState<OriginData[]>([]);

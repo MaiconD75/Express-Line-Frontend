@@ -5,7 +5,6 @@ import { MenuItem } from '@material-ui/core';
 import api from '../../services/api';
 import statesList from '../../utils/statesList';
 import { createOrUpdateEntity } from '../../services/apiMethods';
-import { RecipientData } from '../../hooks/RecipientsContextx';
 import { useModal } from '../../hooks/ModalContext';
 
 import ActionButton from '../../components/ActionButton';
@@ -28,6 +27,17 @@ import {
   HeadContainer,
   MainContainer,
 } from './styles';
+
+export interface RecipientData {
+  id: string;
+  name: string;
+  city: string;
+  complement: string;
+  number: number;
+  state: string;
+  street: string;
+  zip_code: string;
+}
 
 const Recipients: React.FC = () => {
   const [recipients, setRecipients] = useState<RecipientData[]>([]);

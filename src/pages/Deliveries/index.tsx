@@ -2,11 +2,12 @@ import React, { useEffect, useState, useCallback } from 'react';
 
 import { MenuItem } from '@material-ui/core';
 
+
 import api from '../../services/api';
 import FormatAddres from '../../utils/FormatAddres';
-import { DeliverymanData } from '../../hooks/DeliverymenContextx';
-import { RecipientData } from '../../hooks/RecipientsContextx';
-import { OriginData } from '../../hooks/OriginsContextx';
+import { DeliverymanData } from '../Deliverymen';
+import { RecipientData } from '../Recipients';
+import { OriginData } from '../Origins';
 
 import ActionButton from '../../components/ActionButton';
 import Button from '../../components/Button';
