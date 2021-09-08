@@ -3,7 +3,6 @@ import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import api from '../../services/api';
 import getInitials from '../../utils/getInitials';
 
-
 import { createOrUpdateEntity } from '../../services/apiMethods';
 
 import { getFilesUrl } from '../../utils/getFilesUrl';
