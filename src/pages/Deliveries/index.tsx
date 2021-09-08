@@ -118,12 +118,14 @@ const Deliveries: React.FC = () => {
   }, []);
 
   const handleOpenModal = useCallback(
-    (buttonTag: string, data?: DeliveryData) => {
-      api
+    async (buttonTag: string, data?: DeliveryData) => {
+      await api
         .get('/deliverymen')
         .then(response => setDeliverymenList(response.data));
-      api.get('/origins').then(response => setOriginsList(response.data));
-      api.get('/recipients').then(response => setRecipientsList(response.data));
+      await api.get('/origins').then(response => setOriginsList(response.data));
+      await api
+        .get('/recipients')
+        .then(response => setRecipientsList(response.data));
 
       setSelectedDeliveryman(data?.deliveryman || ({} as DeliverymanData));
       setSelectedOrigin(data?.origin || ({} as OriginData));
@@ -132,7 +134,7 @@ const Deliveries: React.FC = () => {
       setInitialData(data || {});
       toggleModalState(buttonTag);
     },
-    [toggleModalState, initialData],
+    [toggleModalState],
   );
 
   const handleSubmit = useCallback(
@@ -158,6 +160,15 @@ const Deliveries: React.FC = () => {
     [initialData, toggleModalState],
   );
 
+  const handleDeleteItem = useCallback(
+    async (id: string) => {
+      await api.delete(`/deliveries/${id}`);
+
+      setDeliveries(deliveries.filter(delivery => delivery.id !== id));
+    },
+    [deliveries],
+  );
+
   return (
     <Container>
       <Modal>
@@ -168,7 +179,7 @@ const Deliveries: React.FC = () => {
           <div>
             <Input
               readOnly
-              value={selectedDeliveryman.id || ''}
+              defaultValue={selectedDeliveryman.id || ''}
               hidden
               name="deliveryman_id"
             />
@@ -180,7 +191,7 @@ const Deliveries: React.FC = () => {
                 }
               >
                 <MenuItem value="" disabled>
-                  Entregador
+                  <em>Entregador</em>
                 </MenuItem>
                 {deliverymenList.map(deliveryman => (
                   <MenuItem key={deliveryman.id} value={deliveryman.id}>
@@ -206,7 +217,7 @@ const Deliveries: React.FC = () => {
 
             <Input
               readOnly
-              value={selectedOrigin.id || ''}
+              defaultValue={selectedOrigin.id || ''}
               hidden
               name="origin_id"
             />
@@ -216,7 +227,7 @@ const Deliveries: React.FC = () => {
                 value={selectedOrigin.id || initialData.origin_id || ''}
               >
                 <MenuItem value="" disabled>
-                  Estoque
+                  <em>Estoque</em>
                 </MenuItem>
                 {originsList.map(origin => (
                   <MenuItem key={origin.id} value={origin.id}>
@@ -250,7 +261,7 @@ const Deliveries: React.FC = () => {
 
             <Input
               readOnly
-              value={selectedRecipient.id || ''}
+              defaultValue={selectedRecipient.id || ''}
               hidden
               name="recipient_id"
             />
@@ -260,7 +271,7 @@ const Deliveries: React.FC = () => {
                 value={selectedRecipient.id || initialData.recipient_id || ''}
               >
                 <MenuItem value="" disabled>
-                  Destinatário
+                  <em>Destinatário</em>
                 </MenuItem>
                 {recipientsList.map(recipient => (
                   <MenuItem key={recipient.id} value={recipient.id}>
@@ -354,6 +365,7 @@ const Deliveries: React.FC = () => {
                     <ActionButton
                       color="#bd1111"
                       disabled={!!delivery.start_date}
+                      onClick={() => handleDeleteItem(delivery.id)}
                     >
                       <img src={trashImg} alt="Excluir" />
                     </ActionButton>

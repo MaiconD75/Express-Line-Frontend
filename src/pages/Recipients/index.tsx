@@ -115,7 +115,7 @@ const Recipients: React.FC = () => {
             <Input
               name="state"
               placeholder="Estado"
-              value={selectedState || initialData.state}
+              defaultValue={selectedState || initialData.state}
               readOnly
             />
             <Select
@@ -124,7 +124,7 @@ const Recipients: React.FC = () => {
               onChange={e => setSelectedState(e.target.value as string)}
             >
               <MenuItem value="" disabled>
-                UF
+                <em>UF</em>
               </MenuItem>
               {statesList.map(state => (
                 <MenuItem key={state} value={state}>

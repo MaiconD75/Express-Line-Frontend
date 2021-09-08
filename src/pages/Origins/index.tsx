@@ -110,7 +110,7 @@ const Origins: React.FC = () => {
             <Input
               name="state"
               placeholder="Estado"
-              value={selectedState || initialData.state}
+              defaultValue={selectedState || initialData.state}
               readOnly
             />
             <Select
@@ -119,7 +119,7 @@ const Origins: React.FC = () => {
               onChange={e => setSelectedState(e.target.value as string)}
             >
               <MenuItem value="" disabled>
-                Destinatário
+                <em>UF</em>
               </MenuItem>
               {statesList.map(state => (
                 <MenuItem key={state} value={state}>
