@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 
-import { OriginData } from '../../hooks/OriginsContextx';
-
 import ActionButton from '../../components/ActionButton';
 import Button from '../../components/Button';
 import SearchBar from '../../components/SearchBar';
@@ -20,6 +18,16 @@ import {
   MainContainer,
 } from './styles';
 import api from '../../services/api';
+
+export interface OriginData {
+  id: string;
+  city: string;
+  complement: string;
+  number: number;
+  state: string;
+  street: string;
+  zip_code: string;
+}
 
 const Origins: React.FC = () => {
   const [origins, setOrigins] = useState<OriginData[]>([]);

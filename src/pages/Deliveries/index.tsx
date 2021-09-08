@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 
 import FormatAddres from '../../utils/FormatAddres';
 
-import { DeliverymanData } from '../../hooks/DeliverymenContextx';
-import { RecipientData } from '../../hooks/RecipientsContextx';
-import { OriginData } from '../../hooks/OriginsContextx';
+import { DeliverymanData } from '../Deliverymen';
+import { RecipientData } from '../Recipients';
+import { OriginData } from '../Origins';
 
 import ActionButton from '../../components/ActionButton';
 import Button from '../../components/Button';

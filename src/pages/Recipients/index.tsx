@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 
-import { RecipientData } from '../../hooks/RecipientsContextx';
-
 import ActionButton from '../../components/ActionButton';
 import Button from '../../components/Button';
 import SearchBar from '../../components/SearchBar';
@@ -20,6 +18,17 @@ import {
   MainContainer,
 } from './styles';
 import api from '../../services/api';
+
+export interface RecipientData {
+  id: string;
+  name: string;
+  city: string;
+  complement: string;
+  number: number;
+  state: string;
+  street: string;
+  zip_code: string;
+}
 
 const Recipients: React.FC = () => {
   const [recipients, setRecipients] = useState<RecipientData[]>([]);
