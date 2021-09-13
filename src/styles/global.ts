@@ -20,10 +20,4 @@ export default createGlobalStyle`
     font: 500 16px 'Poppins', sans-serif;
     letter-spacing: 0.02em;
   }
-
-  em {
-    font: 20px 'Roboto', sans-serif;
-    color: #333;
-    color: #ccc;
-  }
 `;

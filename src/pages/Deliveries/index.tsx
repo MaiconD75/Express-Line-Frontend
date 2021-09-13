@@ -1,6 +1,10 @@
-import React, { useEffect, useState, useCallback, ChangeEvent } from 'react';
-
-import { MenuItem } from '@material-ui/core';
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  ChangeEvent,
+  useRef,
+} from 'react';
 
 import api from '../../services/api';
 import FormatAddres from '../../utils/FormatAddres';
@@ -30,12 +34,15 @@ import {
   MainContainer,
   StatusContainer,
   StatusSelect,
-  OptionsSelectContainer,
-  OptionsSelect,
-  InfoContainer,
 } from './styles';
 import { useModal } from '../../hooks/ModalContext';
 import { createOrUpdateEntity } from '../../services/apiMethods';
+import {
+  ExtendedSelect,
+  InfoContainer,
+  OptionsSelectContainer,
+} from '../../components/Select/ExtendedSelect';
+import { Option } from '../../components/Select/styles';
 
 export interface DeliveryData {
   id: string;
@@ -55,6 +62,8 @@ interface EventData {
 }
 
 const Deliveries: React.FC = () => {
+  const { toggleModalState } = useModal();
+
   const [deliveries, setDeliveries] = useState<DeliveryData[]>([]);
   const [selectedStatus, setSelectedStatus] = useState('none');
 
@@ -111,8 +120,6 @@ const Deliveries: React.FC = () => {
     [recipientsList],
   );
 
-  const { toggleModalState } = useModal();
-
   useEffect(() => {
     api.get('/deliveries').then(response => setDeliveries(response.data));
   }, []);
@@ -139,7 +146,7 @@ const Deliveries: React.FC = () => {
 
   const handleSubmit = useCallback(
     async (newData: DeliveryData) => {
-      const newDelivery = await createOrUpdateEntity(
+      const newDelivery = await createOrUpdateEntity<DeliveryData>(
         initialData as DeliveryData,
         newData,
         'deliveries',
@@ -177,28 +184,18 @@ const Deliveries: React.FC = () => {
         <Form id="hook-form" initialData={initialData} onSubmit={handleSubmit}>
           <Input name="product" placeholder="Produto" />
           <div>
-            <Input
-              readOnly
-              defaultValue={selectedDeliveryman.id || ''}
-              hidden
-              name="deliveryman_id"
-            />
             <OptionsSelectContainer>
-              <OptionsSelect
+              <ExtendedSelect
                 onChange={handleChangeSelectedDeliveryman}
-                value={
-                  selectedDeliveryman.id || initialData.deliveryman_id || ''
-                }
+                placeholder="Entregador"
+                name="deliveryman_id"
               >
-                <MenuItem value="" disabled>
-                  <em>Entregador</em>
-                </MenuItem>
                 {deliverymenList.map(deliveryman => (
-                  <MenuItem key={deliveryman.id} value={deliveryman.id}>
+                  <Option key={deliveryman.id} value={deliveryman.id}>
                     {deliveryman.name}
-                  </MenuItem>
+                  </Option>
                 ))}
-              </OptionsSelect>
+              </ExtendedSelect>
               <InfoContainer>
                 <div>
                   <span>Email:</span>
@@ -215,26 +212,18 @@ const Deliveries: React.FC = () => {
               </InfoContainer>
             </OptionsSelectContainer>
 
-            <Input
-              readOnly
-              defaultValue={selectedOrigin.id || ''}
-              hidden
-              name="origin_id"
-            />
             <OptionsSelectContainer>
-              <OptionsSelect
+              <ExtendedSelect
                 onChange={handleChangeSelectedOrigin}
-                value={selectedOrigin.id || initialData.origin_id || ''}
+                placeholder="Estoque"
+                name="origin_id"
               >
-                <MenuItem value="" disabled>
-                  <em>Estoque</em>
-                </MenuItem>
                 {originsList.map(origin => (
-                  <MenuItem key={origin.id} value={origin.id}>
+                  <Option key={origin.id} value={origin.id}>
                     {origin.street}
-                  </MenuItem>
+                  </Option>
                 ))}
-              </OptionsSelect>
+              </ExtendedSelect>
               <InfoContainer>
                 <div>
                   <span>Número:</span>
@@ -259,26 +248,18 @@ const Deliveries: React.FC = () => {
               </InfoContainer>
             </OptionsSelectContainer>
 
-            <Input
-              readOnly
-              defaultValue={selectedRecipient.id || ''}
-              hidden
-              name="recipient_id"
-            />
             <OptionsSelectContainer>
-              <OptionsSelect
+              <ExtendedSelect
                 onChange={handleChangeSelectedRecipient}
-                value={selectedRecipient.id || initialData.recipient_id || ''}
+                placeholder="Destinatário"
+                name="recipient_id"
               >
-                <MenuItem value="" disabled>
-                  <em>Destinatário</em>
-                </MenuItem>
                 {recipientsList.map(recipient => (
-                  <MenuItem key={recipient.id} value={recipient.id}>
+                  <Option key={recipient.id} value={recipient.id}>
                     {recipient.name}
-                  </MenuItem>
+                  </Option>
                 ))}
-              </OptionsSelect>
+              </ExtendedSelect>
               <InfoContainer>
                 <div>
                   <span>Rua:</span>
@@ -334,11 +315,11 @@ const Deliveries: React.FC = () => {
                   value={selectedStatus}
                   onChange={e => setSelectedStatus(e.target.value as string)}
                 >
-                  <MenuItem value="none">Status</MenuItem>
-                  <MenuItem value="delivered">Entregue</MenuItem>
-                  <MenuItem value="forwarded">Encaminhado</MenuItem>
-                  <MenuItem value="pending">Pendente</MenuItem>
-                  <MenuItem value="canceled">Cancelado</MenuItem>
+                  <Option value="none">Status</Option>
+                  <Option value="delivered">Entregue</Option>
+                  <Option value="forwarded">Encaminhado</Option>
+                  <Option value="pending">Pendente</Option>
+                  <Option value="canceled">Cancelado</Option>
                 </StatusSelect>
               </th>
             </TableHead>
