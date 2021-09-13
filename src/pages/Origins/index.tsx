@@ -12,7 +12,7 @@ import Button from '../../components/Button';
 import Input from '../../components/Input';
 import Modal from '../../components/Modal';
 import SearchBar from '../../components/SearchBar';
-import Select from '../../components/Select';
+import { NormalSelect } from '../../components/Select/NormalSelect';
 import SideBar from '../../components/SideBar';
 import Table from '../../components/Table';
 import TableHead from '../../components/Table/TableHead';
@@ -113,20 +113,13 @@ const Origins: React.FC = () => {
               defaultValue={selectedState || initialData.state}
               readOnly
             />
-            <Select
-              displayEmpty
-              value={selectedState || initialData.state || ''}
-              onChange={e => setSelectedState(e.target.value as string)}
-            >
-              <MenuItem value="" disabled>
-                <em>UF</em>
-              </MenuItem>
+            <NormalSelect placeholder="UF" name="state">
               {statesList.map(state => (
-                <MenuItem key={state} value={state}>
+                <option key={state} value={state}>
                   {state}
-                </MenuItem>
+                </option>
               ))}
-            </Select>
+            </NormalSelect>
             <Input name="zip_code" placeholder="CEP" />
           </div>
           <div>

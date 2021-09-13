@@ -1,11 +1,46 @@
-import React from 'react';
+import { FormControl, SelectProps } from '@material-ui/core';
+import { useField } from '@unform/core';
+import React, { useEffect, useRef } from 'react';
+import { ControlledForm, InputSelect, Option } from './styles';
 
-import { SelectProps } from '@material-ui/core';
+interface SelectInputProps extends SelectProps {
+  name: string;
+  placeholder: string;
+}
 
-import { StyledSelect } from './styles';
+const Select: React.FC<SelectInputProps> = ({
+  name,
+  children,
+  placeholder,
+  ...rest
+}) => {
+  const inputRef = useRef(null);
+  const { fieldName, defaultValue = '', error, registerField } = useField(name);
 
-const Select: React.FC<SelectProps> = ({ children, ...rest }) => {
-  return <StyledSelect {...rest}>{children}</StyledSelect>;
+  useEffect(() => {
+    registerField({
+      name: fieldName,
+      ref: inputRef.current,
+      path: 'value',
+    });
+  }, [fieldName, registerField]);
+
+  return (
+    <ControlledForm>
+      <InputSelect
+        inputRef={inputRef}
+        defaultValue={defaultValue}
+        error={!!error}
+        native
+        {...rest}
+      >
+        <Option disabled value="">
+          {placeholder}
+        </Option>
+        {children}
+      </InputSelect>
+    </ControlledForm>
+  );
 };
 
 export default Select;
