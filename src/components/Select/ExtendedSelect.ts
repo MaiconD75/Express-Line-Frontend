@@ -60,7 +60,7 @@ export const ExtendedSelect = styled(Select).attrs(() => ({
     display: none;
   }
 
-  > select:focus {
+  > div:focus {
     background-color: #fefefe;
   }
 `;

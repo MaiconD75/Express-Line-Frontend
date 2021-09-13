@@ -45,7 +45,7 @@ export const NormalSelect = styled(Select)`
     }
   }
 
-  select:focus {
+  > div:focus {
     background-color: #fefefe;
   }
 `;
