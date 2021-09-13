@@ -1,20 +1,27 @@
-import { FormControl, SelectProps } from '@material-ui/core';
+import { SelectProps } from '@material-ui/core';
 import { useField } from '@unform/core';
 import React, { useEffect, useRef } from 'react';
 import { ControlledForm, InputSelect, Option } from './styles';
 
+interface EventData {
+  name?: string | undefined;
+  value: unknown;
+}
+
 interface SelectInputProps extends SelectProps {
   name: string;
   placeholder: string;
+  handleOnChange?(e: React.ChangeEvent<EventData>): void;
 }
 
 const Select: React.FC<SelectInputProps> = ({
   name,
   children,
   placeholder,
+  handleOnChange,
   ...rest
 }) => {
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const { fieldName, defaultValue = '', error, registerField } = useField(name);
 
   useEffect(() => {
@@ -27,15 +34,20 @@ const Select: React.FC<SelectInputProps> = ({
 
   return (
     <ControlledForm>
+      <input readOnly defaultValue={defaultValue} hidden ref={inputRef} />
       <InputSelect
-        inputRef={inputRef}
+        onChange={e => {
+          if (inputRef.current) {
+            inputRef.current.value = `${e.target.value}`;
+          }
+
+          handleOnChange && handleOnChange(e);
+        }}
         defaultValue={defaultValue}
-        error={!!error}
-        native
         {...rest}
       >
-        <Option disabled value="">
-          {placeholder}
+        <Option value="">
+          <em>{placeholder}</em>
         </Option>
         {children}
       </InputSelect>

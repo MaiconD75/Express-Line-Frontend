@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { Form } from '@unform/web';
-import { MenuItem } from '@material-ui/core';
 import api from '../../services/api';
 import statesList from '../../utils/statesList';
 import { createOrUpdateEntity } from '../../services/apiMethods';
@@ -27,6 +26,7 @@ import {
   HeadContainer,
   MainContainer,
 } from './styles';
+import { Option } from '../../components/Select/styles';
 
 export interface OriginData {
   id: string;
@@ -115,9 +115,9 @@ const Origins: React.FC = () => {
             />
             <NormalSelect placeholder="UF" name="state">
               {statesList.map(state => (
-                <option key={state} value={state}>
+                <Option key={state} value={state}>
                   {state}
-                </option>
+                </Option>
               ))}
             </NormalSelect>
             <Input name="zip_code" placeholder="CEP" />

@@ -1,16 +1,12 @@
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  ChangeEvent,
-  useRef,
-} from 'react';
+import React, { useEffect, useState, useCallback, ChangeEvent } from 'react';
 
 import api from '../../services/api';
-import FormatAddres from '../../utils/FormatAddres';
+import { createOrUpdateEntity } from '../../services/apiMethods';
 import { DeliverymanData } from '../Deliverymen';
-import { RecipientData } from '../Recipients';
+import FormatAddres from '../../utils/FormatAddres';
 import { OriginData } from '../Origins';
+import { RecipientData } from '../Recipients';
+import { useModal } from '../../hooks/ModalContext';
 
 import ActionButton from '../../components/ActionButton';
 import Button from '../../components/Button';
@@ -35,8 +31,6 @@ import {
   StatusContainer,
   StatusSelect,
 } from './styles';
-import { useModal } from '../../hooks/ModalContext';
-import { createOrUpdateEntity } from '../../services/apiMethods';
 import {
   ExtendedSelect,
   InfoContainer,
@@ -186,7 +180,7 @@ const Deliveries: React.FC = () => {
           <div>
             <OptionsSelectContainer>
               <ExtendedSelect
-                onChange={handleChangeSelectedDeliveryman}
+                handleOnChange={handleChangeSelectedDeliveryman}
                 placeholder="Entregador"
                 name="deliveryman_id"
               >
@@ -214,7 +208,7 @@ const Deliveries: React.FC = () => {
 
             <OptionsSelectContainer>
               <ExtendedSelect
-                onChange={handleChangeSelectedOrigin}
+                handleOnChange={handleChangeSelectedOrigin}
                 placeholder="Estoque"
                 name="origin_id"
               >
@@ -250,7 +244,7 @@ const Deliveries: React.FC = () => {
 
             <OptionsSelectContainer>
               <ExtendedSelect
-                onChange={handleChangeSelectedRecipient}
+                handleOnChange={handleChangeSelectedRecipient}
                 placeholder="Destinatário"
                 name="recipient_id"
               >
