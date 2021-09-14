@@ -44,6 +44,9 @@ const Deliverymen: React.FC = () => {
   const { toggleModalState } = useModal();
 
   const [deliverymen, setDeliverymen] = useState<DeliverymanData[]>([]);
+  const [filteredDeliverymen, setFilteredDeliverymen] = useState<
+    DeliverymanData[]
+  >([]);
   const [initialData, setInitialData] = useState<{
     id?: string;
     avatar?: string;
@@ -131,6 +134,21 @@ const Deliverymen: React.FC = () => {
     [deliverymen],
   );
 
+  const handleSearch = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      e.preventDefault();
+      if (e.target.value === '') {
+        setFilteredDeliverymen([]);
+      }
+      setFilteredDeliverymen(
+        deliverymen.filter(deliveryman =>
+          deliveryman.name.toLowerCase().includes(e.target.value.toLowerCase()),
+        ),
+      );
+    },
+    [deliverymen],
+  );
+
   return (
     <Container>
       <Modal>
@@ -178,7 +196,7 @@ const Deliverymen: React.FC = () => {
           >
             Contratar
           </Button>
-          <SearchBar />
+          <SearchBar onChange={handleSearch} />
         </HeadContainer>
 
         <MainContainer>
@@ -195,54 +213,56 @@ const Deliverymen: React.FC = () => {
               </th>
               <th aria-label="buttons" />
             </TableHead>
-            {deliverymen.map(deliveryman => {
-              return (
-                <TableItem key={deliveryman.id}>
-                  <td>
-                    <ImageContainer
-                      nameColor={`#${(
-                        (getInitials(deliveryman.name).charCodeAt(0) +
-                          getInitials(deliveryman.name).charCodeAt(1)) *
-                        11
-                      ).toString(16)}`}
-                    >
-                      {deliveryman.avatar ? (
-                        <img
-                          src={getFilesUrl(deliveryman.avatar)}
-                          alt={deliveryman.name}
-                        />
-                      ) : (
-                        <p>{getInitials(deliveryman.name)}</p>
-                      )}
-                    </ImageContainer>
-                  </td>
-                  <td>{deliveryman.name}</td>
-                  <td>{deliveryman.email}</td>
-                  <td>
-                    <p>83</p>
-                  </td>
-                  <td>
-                    <p>5</p>
-                  </td>
-                  <td>
-                    <ActionButton
-                      color="#ffc600"
-                      onClick={() => {
-                        handleOpenForm('Atualizar', deliveryman);
-                      }}
-                    >
-                      <img src={editImg} alt="Editar" />
-                    </ActionButton>
-                    <ActionButton
-                      color="#bd1111"
-                      onClick={() => handleDeleteItem(deliveryman.id)}
-                    >
-                      <img src={fireImg} alt="Excluir" />
-                    </ActionButton>
-                  </td>
-                </TableItem>
-              );
-            })}
+            {(filteredDeliverymen[0] ? filteredDeliverymen : deliverymen).map(
+              deliveryman => {
+                return (
+                  <TableItem key={deliveryman.id}>
+                    <td>
+                      <ImageContainer
+                        nameColor={`#${(
+                          (getInitials(deliveryman.name).charCodeAt(0) +
+                            getInitials(deliveryman.name).charCodeAt(1)) *
+                          11
+                        ).toString(16)}`}
+                      >
+                        {deliveryman.avatar ? (
+                          <img
+                            src={getFilesUrl(deliveryman.avatar)}
+                            alt={deliveryman.name}
+                          />
+                        ) : (
+                          <p>{getInitials(deliveryman.name)}</p>
+                        )}
+                      </ImageContainer>
+                    </td>
+                    <td>{deliveryman.name}</td>
+                    <td>{deliveryman.email}</td>
+                    <td>
+                      <p>83</p>
+                    </td>
+                    <td>
+                      <p>5</p>
+                    </td>
+                    <td>
+                      <ActionButton
+                        color="#ffc600"
+                        onClick={() => {
+                          handleOpenForm('Atualizar', deliveryman);
+                        }}
+                      >
+                        <img src={editImg} alt="Editar" />
+                      </ActionButton>
+                      <ActionButton
+                        color="#bd1111"
+                        onClick={() => handleDeleteItem(deliveryman.id)}
+                      >
+                        <img src={fireImg} alt="Excluir" />
+                      </ActionButton>
+                    </td>
+                  </TableItem>
+                );
+              },
+            )}
           </Table>
         </MainContainer>
       </PageContainer>
