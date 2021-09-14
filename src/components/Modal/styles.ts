@@ -22,6 +22,8 @@ export const MainContainer = styled.div`
   width: 57vw;
   height: 87vh;
   padding: 56px;
+  position: fixed;
+  z-index: 4;
 
   background-color: #f5f5f5;
   align-items: center;

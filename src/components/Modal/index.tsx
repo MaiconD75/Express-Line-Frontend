@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEvent, useCallback } from 'react';
 import { useModal } from '../../hooks/ModalContext';
 import Button from '../Button';
 
@@ -7,8 +7,15 @@ import { Container, MainContainer, ButtonContainer } from './styles';
 const Modal: React.FC = ({ children }) => {
   const { toggleModalState, isClosed, confirmButtonTag } = useModal();
 
+  const handleClickOutside = useCallback(
+    (e: MouseEvent<HTMLDivElement>) => {
+      e.target === e.currentTarget && toggleModalState();
+    },
+    [toggleModalState],
+  );
+
   return (
-    <Container isClosed={isClosed}>
+    <Container onClick={handleClickOutside} isClosed={isClosed}>
       {isClosed ? (
         <></>
       ) : (
