@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
 import { Form } from '@unform/web';
 import api from '../../services/api';
@@ -40,6 +40,7 @@ export interface OriginData {
 
 const Origins: React.FC = () => {
   const [origins, setOrigins] = useState<OriginData[]>([]);
+  const [filteredOrigins, setFilteredOrigins] = useState<OriginData[]>([]);
   const [selectedState, setSelectedState] = useState('');
   const [initialData, setInitialData] = useState<{
     id?: string;
@@ -95,6 +96,21 @@ const Origins: React.FC = () => {
     [origins],
   );
 
+  const handleSearch = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      e.preventDefault();
+      if (e.target.value === '') {
+        setFilteredOrigins([]);
+      }
+      setFilteredOrigins(
+        origins.filter(origin =>
+          origin.street.toLowerCase().includes(e.target.value.toLowerCase()),
+        ),
+      );
+    },
+    [origins],
+  );
+
   return (
     <Container>
       <Modal>
@@ -136,7 +152,7 @@ const Origins: React.FC = () => {
           >
             Registrar estoque
           </Button>
-          <SearchBar />
+          <SearchBar onChange={handleSearch} />
         </HeadContainer>
 
         <MainContainer>
@@ -156,7 +172,7 @@ const Origins: React.FC = () => {
               </th>
               <th aria-label="buttons" />
             </TableHead>
-            {origins.map(origin => {
+            {(filteredOrigins[0] ? filteredOrigins : origins).map(origin => {
               return (
                 <TableItem key={origin.id}>
                   <td>{origin.street}</td>
