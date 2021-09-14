@@ -50,9 +50,16 @@ export const MainContainer = styled.div`
   overflow-y: scroll;
   padding-bottom: 24px;
 
+  td {
+    p {
+      text-align: start;
+    }
+  }
+
   th:nth-child(4),
   td:nth-child(4) {
-    min-width: 400px;
+    max-width: 400px;
+    width: 100%;
   }
 `;
 
