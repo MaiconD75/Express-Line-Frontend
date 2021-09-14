@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useCallback, ChangeEvent } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  ChangeEvent,
+  MouseEvent,
+} from 'react';
 
 import api from '../../services/api';
 import { createOrUpdateEntity } from '../../services/apiMethods';
@@ -42,9 +48,10 @@ export interface DeliveryData {
   id: string;
   product: string;
   signature: string;
-  start_date: string;
-  end_date: string;
-  canceled_at: string;
+  start_date: Date;
+  end_date: Date;
+  canceled_at: Date;
+  created_at: Date;
   deliveryman: DeliverymanData;
   recipient: RecipientData;
   origin: OriginData;
@@ -62,7 +69,9 @@ const Deliveries: React.FC = () => {
   const [filteredDeliveries, setFilteredDeliveries] = useState<DeliveryData[]>(
     [],
   );
+  const [SortedDeliveries, setSortedDeliveries] = useState<DeliveryData[]>([]);
   const [selectedStatus, setSelectedStatus] = useState('none');
+  const [sort, setSort] = useState(0);
 
   const [deliverymenList, setDeliverymenList] = useState<DeliverymanData[]>([]);
   const [originsList, setOriginsList] = useState<OriginData[]>([]);
@@ -118,7 +127,10 @@ const Deliveries: React.FC = () => {
   );
 
   useEffect(() => {
-    api.get('/deliveries').then(response => setDeliveries(response.data));
+    api.get('/deliveries').then(response => {
+      setDeliveries(response.data);
+      setSortedDeliveries(response.data);
+    });
   }, []);
 
   const handleOpenModal = useCallback(
@@ -187,6 +199,45 @@ const Deliveries: React.FC = () => {
     },
     [deliveries],
   );
+
+  const handleComparation = useCallback(<T extends unknown>(a: T, b: T) => {
+    if (a > b) {
+      return 1;
+    }
+    if (a < b) {
+      return -1;
+    }
+    return 0;
+  }, []);
+
+  const handleSort = useCallback(() => {
+    let sortType = sort;
+    sortType === 2 ? (sortType = 0) : (sortType += 1);
+    const deliveriesList = filteredDeliveries[0]
+      ? filteredDeliveries
+      : deliveries;
+
+    sortType === 0 &&
+      setSortedDeliveries(
+        deliveriesList.sort((a, b) =>
+          handleComparation<Date>(a.created_at, b.created_at),
+        ),
+      );
+    sortType === 1 &&
+      setSortedDeliveries(
+        deliveriesList.sort((a, b) =>
+          handleComparation<string>(a.product, b.product),
+        ),
+      );
+    sortType === 2 &&
+      setSortedDeliveries(
+        deliveriesList.sort((a, b) =>
+          handleComparation<string>(b.product, a.product),
+        ),
+      );
+
+    setSort(sortType);
+  }, [sort, deliveries, filteredDeliveries, handleComparation]);
 
   return (
     <Container>
@@ -317,7 +368,11 @@ const Deliveries: React.FC = () => {
         <MainContainer>
           <Table>
             <TableHead>
-              <th>Produto</th>
+              <th>
+                <button type="button" onClick={handleSort}>
+                  Produto
+                </button>
+              </th>
               <th>Entregador</th>
               <th>Destinatário</th>
               <th>Endereço de estoque</th>
@@ -335,39 +390,37 @@ const Deliveries: React.FC = () => {
                 </StatusSelect>
               </th>
             </TableHead>
-            {(filteredDeliveries[0] ? filteredDeliveries : deliveries).map(
-              delivery => {
-                return (
-                  <TableItem key={delivery.id}>
-                    <td>{delivery.product}</td>
-                    <td>{delivery.deliveryman.name}</td>
-                    <td>{delivery.recipient.name}</td>
-                    <td>
-                      <p>{FormatAddres(delivery.origin)}</p>
-                    </td>
+            {SortedDeliveries.map(delivery => {
+              return (
+                <TableItem key={delivery.id}>
+                  <td>{delivery.product}</td>
+                  <td>{delivery.deliveryman.name}</td>
+                  <td>{delivery.recipient.name}</td>
+                  <td>
+                    <p>{FormatAddres(delivery.origin)}</p>
+                  </td>
 
-                    <StatusContainer>
-                      <StatusTag delivery={delivery} />
+                  <StatusContainer>
+                    <StatusTag delivery={delivery} />
 
-                      <ActionButton
-                        color="#ffc600"
-                        disabled={!!delivery.start_date}
-                        onClick={() => handleOpenModal('Atualizar', delivery)}
-                      >
-                        <img src={editImg} alt="Editar" />
-                      </ActionButton>
-                      <ActionButton
-                        color="#bd1111"
-                        disabled={!!delivery.start_date}
-                        onClick={() => handleDeleteItem(delivery.id)}
-                      >
-                        <img src={trashImg} alt="Excluir" />
-                      </ActionButton>
-                    </StatusContainer>
-                  </TableItem>
-                );
-              },
-            )}
+                    <ActionButton
+                      color="#ffc600"
+                      disabled={!!delivery.start_date}
+                      onClick={() => handleOpenModal('Atualizar', delivery)}
+                    >
+                      <img src={editImg} alt="Editar" />
+                    </ActionButton>
+                    <ActionButton
+                      color="#bd1111"
+                      disabled={!!delivery.start_date}
+                      onClick={() => handleDeleteItem(delivery.id)}
+                    >
+                      <img src={trashImg} alt="Excluir" />
+                    </ActionButton>
+                  </StatusContainer>
+                </TableItem>
+              );
+            })}
           </Table>
         </MainContainer>
       </PageContainer>
