@@ -59,6 +59,9 @@ const Deliveries: React.FC = () => {
   const { toggleModalState } = useModal();
 
   const [deliveries, setDeliveries] = useState<DeliveryData[]>([]);
+  const [filteredDeliveries, setFilteredDeliveries] = useState<DeliveryData[]>(
+    [],
+  );
   const [selectedStatus, setSelectedStatus] = useState('none');
 
   const [deliverymenList, setDeliverymenList] = useState<DeliverymanData[]>([]);
@@ -166,6 +169,21 @@ const Deliveries: React.FC = () => {
       await api.delete(`/deliveries/${id}`);
 
       setDeliveries(deliveries.filter(delivery => delivery.id !== id));
+    },
+    [deliveries],
+  );
+
+  const handleSearch = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      e.preventDefault();
+      if (e.target.value === '') {
+        setFilteredDeliveries([]);
+      }
+      setFilteredDeliveries(
+        deliveries.filter(delivery =>
+          delivery.product.toLowerCase().includes(e.target.value.toLowerCase()),
+        ),
+      );
     },
     [deliveries],
   );
@@ -293,7 +311,7 @@ const Deliveries: React.FC = () => {
           >
             Adicionar entrega
           </Button>
-          <SearchBar />
+          <SearchBar onChange={handleSearch} />
         </HeadContainer>
 
         <MainContainer>
@@ -317,37 +335,39 @@ const Deliveries: React.FC = () => {
                 </StatusSelect>
               </th>
             </TableHead>
-            {deliveries.map(delivery => {
-              return (
-                <TableItem key={delivery.id}>
-                  <td>{delivery.product}</td>
-                  <td>{delivery.deliveryman.name}</td>
-                  <td>{delivery.recipient.name}</td>
-                  <td>
-                    <p>{FormatAddres(delivery.origin)}</p>
-                  </td>
+            {(filteredDeliveries[0] ? filteredDeliveries : deliveries).map(
+              delivery => {
+                return (
+                  <TableItem key={delivery.id}>
+                    <td>{delivery.product}</td>
+                    <td>{delivery.deliveryman.name}</td>
+                    <td>{delivery.recipient.name}</td>
+                    <td>
+                      <p>{FormatAddres(delivery.origin)}</p>
+                    </td>
 
-                  <StatusContainer>
-                    <StatusTag delivery={delivery} />
+                    <StatusContainer>
+                      <StatusTag delivery={delivery} />
 
-                    <ActionButton
-                      color="#ffc600"
-                      disabled={!!delivery.start_date}
-                      onClick={() => handleOpenModal('Atualizar', delivery)}
-                    >
-                      <img src={editImg} alt="Editar" />
-                    </ActionButton>
-                    <ActionButton
-                      color="#bd1111"
-                      disabled={!!delivery.start_date}
-                      onClick={() => handleDeleteItem(delivery.id)}
-                    >
-                      <img src={trashImg} alt="Excluir" />
-                    </ActionButton>
-                  </StatusContainer>
-                </TableItem>
-              );
-            })}
+                      <ActionButton
+                        color="#ffc600"
+                        disabled={!!delivery.start_date}
+                        onClick={() => handleOpenModal('Atualizar', delivery)}
+                      >
+                        <img src={editImg} alt="Editar" />
+                      </ActionButton>
+                      <ActionButton
+                        color="#bd1111"
+                        disabled={!!delivery.start_date}
+                        onClick={() => handleDeleteItem(delivery.id)}
+                      >
+                        <img src={trashImg} alt="Excluir" />
+                      </ActionButton>
+                    </StatusContainer>
+                  </TableItem>
+                );
+              },
+            )}
           </Table>
         </MainContainer>
       </PageContainer>

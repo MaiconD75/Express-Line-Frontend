@@ -1,20 +1,19 @@
-import React from 'react';
+import React, { InputHTMLAttributes } from 'react';
 
 import Form from '../Form';
 import Input from '../Input';
 
-import searchImg from '../../assets/png/search.png';
+import { Container } from './styles';
 
-import { Container, SearchButton } from './styles';
-
-const SearchBar: React.FC = () => {
+const SearchBar: React.FC<InputHTMLAttributes<HTMLInputElement>> = props => {
   return (
     <Container>
-      <Form onSubmit={() => alert('pesquisando')}>
-        <Input name="searchContent" placeholder="Buscar entrega..." />
-        <SearchButton type="submit">
-          <img src={searchImg} alt="Buscar" />
-        </SearchButton>
+      <Form onSubmit={e => e}>
+        <Input
+          name="searchContent"
+          placeholder="Buscar entrega..."
+          {...props}
+        />
       </Form>
     </Container>
   );
