@@ -13,6 +13,7 @@ interface ContainerProps {
 export const LogoContainer = styled.div`
   width: 100%;
   height: 12.5vh;
+  min-height: 80px;
 
   display: flex;
   align-items: center;
@@ -39,6 +40,9 @@ export const ExtensionButton = styled.button`
   position: absolute;
 
   top: calc(12.5vh - 24px);
+  @media (max-height: 640px) {
+    top: calc(56px);
+  }
   right: -24px;
 
   img {
@@ -54,6 +58,7 @@ export const ExtensionButton = styled.button`
 
 export const TabContainer = styled.div`
   height: 75vh;
+  min-height: 480px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -108,6 +113,7 @@ export const TabButton = styled.button<TabButtonProps>`
 
 export const ExitContainer = styled.div`
   height: 12.5vh;
+  min-height: 80px;
   width: 100%;
 
   background-color: #072ac8;
@@ -146,6 +152,7 @@ export const ExitContainer = styled.div`
 
 export const Container = styled.div<ContainerProps>`
   height: 100vh;
+  min-height: 640px;
   width: 128px;
 
   z-index: 2;
@@ -177,7 +184,7 @@ export const Container = styled.div<ContainerProps>`
     overflow: hidden;
     color: #ffffff;
 
-    transition: 0.2s linear;
+    transition: width 0.2s linear;
   }
 
   ${props =>
