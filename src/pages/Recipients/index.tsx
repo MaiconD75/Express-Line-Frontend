@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
 import { Form } from '@unform/web';
 import api from '../../services/api';
@@ -41,6 +41,9 @@ export interface RecipientData {
 
 const Recipients: React.FC = () => {
   const [recipients, setRecipients] = useState<RecipientData[]>([]);
+  const [filteredRecipients, setFilteredRecipients] = useState<RecipientData[]>(
+    [],
+  );
   const [selectedState, setSelectedState] = useState('');
   const [initialData, setInitialData] = useState<{
     id?: string;
@@ -97,6 +100,21 @@ const Recipients: React.FC = () => {
     [recipients],
   );
 
+  const handleSearch = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      e.preventDefault();
+      if (e.target.value === '') {
+        setFilteredRecipients([]);
+      }
+      setFilteredRecipients(
+        recipients.filter(recipient =>
+          recipient.name.toLowerCase().includes(e.target.value.toLowerCase()),
+        ),
+      );
+    },
+    [recipients],
+  );
+
   return (
     <Container>
       <Modal>
@@ -141,7 +159,7 @@ const Recipients: React.FC = () => {
           >
             Adicionar destinatário
           </Button>
-          <SearchBar />
+          <SearchBar onChange={handleSearch} />
         </HeadContainer>
 
         <MainContainer>
@@ -162,39 +180,41 @@ const Recipients: React.FC = () => {
               </th>
               <th aria-label="buttons" />
             </TableHead>
-            {recipients.map(recipient => {
-              return (
-                <TableItem key={recipient.id}>
-                  <td>{recipient.name}</td>
-                  <td>{recipient.street}</td>
-                  <td>{recipient.city}</td>
-                  <td>
-                    <p>{recipient.state}</p>
-                  </td>
-                  <td>
-                    <p>{recipient.number}</p>
-                  </td>
-                  <td>{recipient.complement || 'Sem complemento'}</td>
-                  <td>
-                    <p>{recipient.zip_code}</p>
-                  </td>
-                  <td>
-                    <ActionButton
-                      color="#ffc600"
-                      onClick={() => handleOpenForm('Atualizar', recipient)}
-                    >
-                      <img src={editImg} alt="Editar" />
-                    </ActionButton>
-                    <ActionButton
-                      color="#bd1111"
-                      onClick={() => handleDeleteItem(recipient.id)}
-                    >
-                      <img src={trashImg} alt="Excluir" />
-                    </ActionButton>
-                  </td>
-                </TableItem>
-              );
-            })}
+            {(filteredRecipients[0] ? filteredRecipients : recipients).map(
+              recipient => {
+                return (
+                  <TableItem key={recipient.id}>
+                    <td>{recipient.name}</td>
+                    <td>{recipient.street}</td>
+                    <td>{recipient.city}</td>
+                    <td>
+                      <p>{recipient.state}</p>
+                    </td>
+                    <td>
+                      <p>{recipient.number}</p>
+                    </td>
+                    <td>{recipient.complement || 'Sem complemento'}</td>
+                    <td>
+                      <p>{recipient.zip_code}</p>
+                    </td>
+                    <td>
+                      <ActionButton
+                        color="#ffc600"
+                        onClick={() => handleOpenForm('Atualizar', recipient)}
+                      >
+                        <img src={editImg} alt="Editar" />
+                      </ActionButton>
+                      <ActionButton
+                        color="#bd1111"
+                        onClick={() => handleDeleteItem(recipient.id)}
+                      >
+                        <img src={trashImg} alt="Excluir" />
+                      </ActionButton>
+                    </td>
+                  </TableItem>
+                );
+              },
+            )}
           </Table>
         </MainContainer>
       </PageContainer>
