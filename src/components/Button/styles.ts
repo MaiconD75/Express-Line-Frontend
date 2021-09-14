@@ -12,6 +12,9 @@ export const StyledButton = styled.button`
   color: #fefefe;
   font: 600 24px 'Roboto', sans-serif;
   transition: 0.2s linear;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 
   &:hover {
     background-color: ${darken(0.06, '#072ac8')};
