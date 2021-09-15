@@ -93,6 +93,13 @@ const Deliveries: React.FC = () => {
     recipient_id?: string;
   }>({});
 
+  useEffect(() => {
+    api.get('/deliveries').then(response => {
+      setDeliveries(response.data);
+      setSortedDeliveries(response.data);
+    });
+  }, []);
+
   const handleChangeSelectedDeliveryman = useCallback(
     (e: ChangeEvent<EventData>) => {
       setSelectedDeliveryman(
@@ -125,13 +132,6 @@ const Deliveries: React.FC = () => {
     },
     [recipientsList],
   );
-
-  useEffect(() => {
-    api.get('/deliveries').then(response => {
-      setDeliveries(response.data);
-      setSortedDeliveries(response.data);
-    });
-  }, []);
 
   const handleOpenModal = useCallback(
     async (buttonTag: string, data?: DeliveryData) => {
@@ -200,6 +200,8 @@ const Deliveries: React.FC = () => {
     [deliveries],
   );
 
+  // TODO useMemo to Sort
+
   const handleComparation = useCallback(<T extends unknown>(a: T, b: T) => {
     if (a > b) {
       return 1;
@@ -210,34 +212,46 @@ const Deliveries: React.FC = () => {
     return 0;
   }, []);
 
-  const handleSort = useCallback(() => {
-    let sortType = sort;
-    sortType === 2 ? (sortType = 0) : (sortType += 1);
-    const deliveriesList = filteredDeliveries[0]
-      ? filteredDeliveries
-      : deliveries;
+  const handleSort = useCallback(
+    (toSort = true) => {
+      let sortType = sort;
+      if (toSort) {
+        sortType === 2 ? (sortType = 0) : (sortType += 1);
+      }
+      console.log(sortType);
 
-    sortType === 0 &&
-      setSortedDeliveries(
-        deliveriesList.sort((a, b) =>
-          handleComparation<Date>(a.created_at, b.created_at),
-        ),
-      );
-    sortType === 1 &&
-      setSortedDeliveries(
-        deliveriesList.sort((a, b) =>
-          handleComparation<string>(a.product, b.product),
-        ),
-      );
-    sortType === 2 &&
-      setSortedDeliveries(
-        deliveriesList.sort((a, b) =>
-          handleComparation<string>(b.product, a.product),
-        ),
-      );
+      const deliveriesToSort = filteredDeliveries[0]
+        ? filteredDeliveries
+        : deliveries;
 
-    setSort(sortType);
-  }, [sort, deliveries, filteredDeliveries, handleComparation]);
+      sortType === 0 &&
+        setSortedDeliveries(
+          deliveriesToSort.sort((a, b) =>
+            handleComparation<Date>(a.created_at, b.created_at),
+          ),
+        );
+      sortType === 1 &&
+        setSortedDeliveries(
+          deliveriesToSort.sort((a, b) =>
+            handleComparation<string>(a.product, b.product),
+          ),
+        );
+      sortType === 2 &&
+        setSortedDeliveries(
+          deliveriesToSort.sort((a, b) =>
+            handleComparation<string>(b.product, a.product),
+          ),
+        );
+
+      setSort(sortType);
+    },
+    [sort, filteredDeliveries, deliveries, handleComparation],
+  );
+
+  useEffect(() => {
+    handleSort(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filteredDeliveries, deliveries]);
 
   return (
     <Container>
