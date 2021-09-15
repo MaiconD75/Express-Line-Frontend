@@ -28,6 +28,7 @@ import {
 } from './styles';
 import { Option } from '../../components/Select/styles';
 import sortComparation from '../../utils/sortComparation';
+import { SortIcon } from '../../components/Table/TableHead/styles';
 
 export interface OriginData {
   id: string;
@@ -209,6 +210,7 @@ const Origins: React.FC = () => {
               <th>
                 <button type="button" onClick={handleSort}>
                   Rua
+                  <SortIcon name="Ordenar" sortType={sort} />
                 </button>
               </th>
               <th>Cidade</th>

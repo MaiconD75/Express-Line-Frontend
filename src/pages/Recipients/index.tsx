@@ -28,6 +28,7 @@ import {
 } from './styles';
 import { Option } from '../../components/Select/styles';
 import sortComparation from '../../utils/sortComparation';
+import { SortIcon } from '../../components/Table/TableHead/styles';
 
 export interface RecipientData {
   id: string;
@@ -213,6 +214,7 @@ const Recipients: React.FC = () => {
               <th>
                 <button type="button" onClick={handleSort}>
                   Nome
+                  <SortIcon name="Ordenar" sortType={sort} />
                 </button>
               </th>
               <th>Rua</th>

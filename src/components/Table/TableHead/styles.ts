@@ -1,4 +1,10 @@
-import styled from 'styled-components';
+import { FiChevronDown } from 'react-icons/fi';
+import { IconType } from 'react-icons/lib';
+import styled, { css } from 'styled-components';
+
+interface sortIconProps extends IconType {
+  sortType: number;
+}
 
 export const Container = styled.thead`
   height: 40px;
@@ -15,6 +21,8 @@ export const Container = styled.thead`
 
   th {
     button {
+      display: flex;
+      align-items: center;
       font: 700 16px 'Poppins', sans-serif;
       color: #7f7f7f;
 
@@ -42,4 +50,20 @@ export const Container = styled.thead`
     color: #7f7f7f;
     outline: none;
   }
+`;
+
+export const SortIcon = styled(FiChevronDown)<sortIconProps>`
+  color: #7f7f7f;
+  font-size: 20px;
+
+  ${props =>
+    props.sortType === 0 &&
+    css`
+      display: none;
+    `}
+  ${props =>
+    props.sortType === 2 &&
+    css`
+      transform: rotate(180deg);
+    `};
 `;

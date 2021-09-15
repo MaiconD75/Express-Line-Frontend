@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback, ChangeEvent } from 'react';
 
+import { FiChevronDown } from 'react-icons/fi';
 import api from '../../services/api';
 import { createOrUpdateEntity } from '../../services/apiMethods';
 import { DeliverymanData } from '../Deliverymen';
@@ -38,6 +39,7 @@ import {
 } from '../../components/Select/ExtendedSelect';
 import { Option } from '../../components/Select/styles';
 import sortComparation from '../../utils/sortComparation';
+import { SortIcon } from '../../components/Table/TableHead/styles';
 
 export interface DeliveryData {
   id: string;
@@ -375,6 +377,7 @@ const Deliveries: React.FC = () => {
               <th>
                 <button type="button" onClick={handleSort}>
                   Produto
+                  <SortIcon name="Ordenar" sortType={sort} />
                 </button>
               </th>
               <th>Entregador</th>
