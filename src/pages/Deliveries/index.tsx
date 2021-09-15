@@ -217,13 +217,19 @@ const Deliveries: React.FC = () => {
       sortType === 1 &&
         setSortedDeliveries(
           deliveriesToSort.sort((a, b) =>
-            sortComparation<string>(a.product, b.product),
+            sortComparation<string>(
+              a.product.toLowerCase(),
+              b.product.toLowerCase(),
+            ),
           ),
         );
       sortType === 2 &&
         setSortedDeliveries(
           deliveriesToSort.sort((a, b) =>
-            sortComparation<string>(b.product, a.product),
+            sortComparation<string>(
+              b.product.toLowerCase(),
+              a.product.toLowerCase(),
+            ),
           ),
         );
 
