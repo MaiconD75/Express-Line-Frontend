@@ -13,6 +13,18 @@ export const Container = styled.thead`
     flex-direction: row;
   }
 
+  th {
+    button {
+      font: 700 16px 'Poppins', sans-serif;
+      color: #7f7f7f;
+
+      background: none;
+      border: none;
+
+      cursor: pointer;
+    }
+  }
+
   p {
     font-weight: 700;
   }

@@ -32,12 +32,14 @@ import {
   ImageContainer,
   AvatarContainer,
 } from './styles';
+import sortComparation from '../../utils/sortComparation';
 
 export interface DeliverymanData {
   avatar: string;
   name: string;
   email: string;
   id: string;
+  created_at: Date;
 }
 
 const Deliverymen: React.FC = () => {
@@ -47,6 +49,10 @@ const Deliverymen: React.FC = () => {
   const [filteredDeliverymen, setFilteredDeliverymen] = useState<
     DeliverymanData[]
   >([]);
+  const [sortedDeliverymen, setSortedDeliverymen] = useState<DeliverymanData[]>(
+    [],
+  );
+  const [sort, setSort] = useState(0);
   const [initialData, setInitialData] = useState<{
     id?: string;
     avatar?: string;
@@ -149,6 +155,46 @@ const Deliverymen: React.FC = () => {
     [deliverymen],
   );
 
+  const handleSort = useCallback(
+    (toSort = true) => {
+      let sortType = sort;
+      if (toSort) {
+        sortType === 2 ? (sortType = 0) : (sortType += 1);
+      }
+
+      const deliverymenToSort = filteredDeliverymen[0]
+        ? filteredDeliverymen
+        : deliverymen;
+
+      sortType === 0 &&
+        setSortedDeliverymen(
+          deliverymenToSort.sort((a, b) =>
+            sortComparation<Date>(a.created_at, b.created_at),
+          ),
+        );
+      sortType === 1 &&
+        setSortedDeliverymen(
+          deliverymenToSort.sort((a, b) =>
+            sortComparation<string>(a.name, b.name),
+          ),
+        );
+      sortType === 2 &&
+        setSortedDeliverymen(
+          deliverymenToSort.sort((a, b) =>
+            sortComparation<string>(b.name, a.name),
+          ),
+        );
+
+      setSort(sortType);
+    },
+    [sort, filteredDeliverymen, deliverymen],
+  );
+
+  useEffect(() => {
+    handleSort(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filteredDeliverymen, deliverymen]);
+
   return (
     <Container>
       <Modal>
@@ -203,7 +249,11 @@ const Deliverymen: React.FC = () => {
           <Table>
             <TableHead>
               <th aria-label="image" />
-              <th>Nome</th>
+              <th>
+                <button type="button" onClick={handleSort}>
+                  Nome
+                </button>
+              </th>
               <th>Email</th>
               <th>
                 <p>Entregas</p>
@@ -213,56 +263,54 @@ const Deliverymen: React.FC = () => {
               </th>
               <th aria-label="buttons" />
             </TableHead>
-            {(filteredDeliverymen[0] ? filteredDeliverymen : deliverymen).map(
-              deliveryman => {
-                return (
-                  <TableItem key={deliveryman.id}>
-                    <td>
-                      <ImageContainer
-                        nameColor={`#${(
-                          (getInitials(deliveryman.name).charCodeAt(0) +
-                            getInitials(deliveryman.name).charCodeAt(1)) *
-                          11
-                        ).toString(16)}`}
-                      >
-                        {deliveryman.avatar ? (
-                          <img
-                            src={getFilesUrl(deliveryman.avatar)}
-                            alt={deliveryman.name}
-                          />
-                        ) : (
-                          <p>{getInitials(deliveryman.name)}</p>
-                        )}
-                      </ImageContainer>
-                    </td>
-                    <td>{deliveryman.name}</td>
-                    <td>{deliveryman.email}</td>
-                    <td>
-                      <p>83</p>
-                    </td>
-                    <td>
-                      <p>5</p>
-                    </td>
-                    <td>
-                      <ActionButton
-                        color="#ffc600"
-                        onClick={() => {
-                          handleOpenForm('Atualizar', deliveryman);
-                        }}
-                      >
-                        <img src={editImg} alt="Editar" />
-                      </ActionButton>
-                      <ActionButton
-                        color="#bd1111"
-                        onClick={() => handleDeleteItem(deliveryman.id)}
-                      >
-                        <img src={fireImg} alt="Excluir" />
-                      </ActionButton>
-                    </td>
-                  </TableItem>
-                );
-              },
-            )}
+            {sortedDeliverymen.map(deliveryman => {
+              return (
+                <TableItem key={deliveryman.id}>
+                  <td>
+                    <ImageContainer
+                      nameColor={`#${(
+                        (getInitials(deliveryman.name).charCodeAt(0) +
+                          getInitials(deliveryman.name).charCodeAt(1)) *
+                        11
+                      ).toString(16)}`}
+                    >
+                      {deliveryman.avatar ? (
+                        <img
+                          src={getFilesUrl(deliveryman.avatar)}
+                          alt={deliveryman.name}
+                        />
+                      ) : (
+                        <p>{getInitials(deliveryman.name)}</p>
+                      )}
+                    </ImageContainer>
+                  </td>
+                  <td>{deliveryman.name}</td>
+                  <td>{deliveryman.email}</td>
+                  <td>
+                    <p>83</p>
+                  </td>
+                  <td>
+                    <p>5</p>
+                  </td>
+                  <td>
+                    <ActionButton
+                      color="#ffc600"
+                      onClick={() => {
+                        handleOpenForm('Atualizar', deliveryman);
+                      }}
+                    >
+                      <img src={editImg} alt="Editar" />
+                    </ActionButton>
+                    <ActionButton
+                      color="#bd1111"
+                      onClick={() => handleDeleteItem(deliveryman.id)}
+                    >
+                      <img src={fireImg} alt="Excluir" />
+                    </ActionButton>
+                  </td>
+                </TableItem>
+              );
+            })}
           </Table>
         </MainContainer>
       </PageContainer>

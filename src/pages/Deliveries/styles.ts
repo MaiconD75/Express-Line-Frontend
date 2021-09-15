@@ -56,18 +56,6 @@ export const MainContainer = styled.div`
     }
   }
 
-  th {
-    button {
-      font: 700 16px 'Poppins', sans-serif;
-      color: #7f7f7f;
-
-      background: none;
-      border: none;
-
-      cursor: pointer;
-    }
-  }
-
   th:nth-child(4),
   td:nth-child(4) {
     max-width: 400px;

@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  ChangeEvent,
-  MouseEvent,
-} from 'react';
+import React, { useEffect, useState, useCallback, ChangeEvent } from 'react';
 
 import api from '../../services/api';
 import { createOrUpdateEntity } from '../../services/apiMethods';
@@ -43,6 +37,7 @@ import {
   OptionsSelectContainer,
 } from '../../components/Select/ExtendedSelect';
 import { Option } from '../../components/Select/styles';
+import sortComparation from '../../utils/sortComparation';
 
 export interface DeliveryData {
   id: string;
@@ -69,9 +64,9 @@ const Deliveries: React.FC = () => {
   const [filteredDeliveries, setFilteredDeliveries] = useState<DeliveryData[]>(
     [],
   );
-  const [SortedDeliveries, setSortedDeliveries] = useState<DeliveryData[]>([]);
-  const [selectedStatus, setSelectedStatus] = useState('none');
+  const [sortedDeliveries, setSortedDeliveries] = useState<DeliveryData[]>([]);
   const [sort, setSort] = useState(0);
+  const [selectedStatus, setSelectedStatus] = useState('none');
 
   const [deliverymenList, setDeliverymenList] = useState<DeliverymanData[]>([]);
   const [originsList, setOriginsList] = useState<OriginData[]>([]);
@@ -92,6 +87,13 @@ const Deliveries: React.FC = () => {
     origin_id?: string;
     recipient_id?: string;
   }>({});
+
+  useEffect(() => {
+    api.get('/deliveries').then(response => {
+      setDeliveries(response.data);
+      setSortedDeliveries(response.data);
+    });
+  }, []);
 
   const handleChangeSelectedDeliveryman = useCallback(
     (e: ChangeEvent<EventData>) => {
@@ -125,13 +127,6 @@ const Deliveries: React.FC = () => {
     },
     [recipientsList],
   );
-
-  useEffect(() => {
-    api.get('/deliveries').then(response => {
-      setDeliveries(response.data);
-      setSortedDeliveries(response.data);
-    });
-  }, []);
 
   const handleOpenModal = useCallback(
     async (buttonTag: string, data?: DeliveryData) => {
@@ -200,44 +195,47 @@ const Deliveries: React.FC = () => {
     [deliveries],
   );
 
-  const handleComparation = useCallback(<T extends unknown>(a: T, b: T) => {
-    if (a > b) {
-      return 1;
-    }
-    if (a < b) {
-      return -1;
-    }
-    return 0;
-  }, []);
+  // TODO useMemo to Sort
 
-  const handleSort = useCallback(() => {
-    let sortType = sort;
-    sortType === 2 ? (sortType = 0) : (sortType += 1);
-    const deliveriesList = filteredDeliveries[0]
-      ? filteredDeliveries
-      : deliveries;
+  const handleSort = useCallback(
+    (toSort = true) => {
+      let sortType = sort;
+      if (toSort) {
+        sortType === 2 ? (sortType = 0) : (sortType += 1);
+      }
 
-    sortType === 0 &&
-      setSortedDeliveries(
-        deliveriesList.sort((a, b) =>
-          handleComparation<Date>(a.created_at, b.created_at),
-        ),
-      );
-    sortType === 1 &&
-      setSortedDeliveries(
-        deliveriesList.sort((a, b) =>
-          handleComparation<string>(a.product, b.product),
-        ),
-      );
-    sortType === 2 &&
-      setSortedDeliveries(
-        deliveriesList.sort((a, b) =>
-          handleComparation<string>(b.product, a.product),
-        ),
-      );
+      const deliveriesToSort = filteredDeliveries[0]
+        ? filteredDeliveries
+        : deliveries;
 
-    setSort(sortType);
-  }, [sort, deliveries, filteredDeliveries, handleComparation]);
+      sortType === 0 &&
+        setSortedDeliveries(
+          deliveriesToSort.sort((a, b) =>
+            sortComparation<Date>(a.created_at, b.created_at),
+          ),
+        );
+      sortType === 1 &&
+        setSortedDeliveries(
+          deliveriesToSort.sort((a, b) =>
+            sortComparation<string>(a.product, b.product),
+          ),
+        );
+      sortType === 2 &&
+        setSortedDeliveries(
+          deliveriesToSort.sort((a, b) =>
+            sortComparation<string>(b.product, a.product),
+          ),
+        );
+
+      setSort(sortType);
+    },
+    [sort, filteredDeliveries, deliveries],
+  );
+
+  useEffect(() => {
+    handleSort(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filteredDeliveries, deliveries]);
 
   return (
     <Container>
@@ -390,7 +388,7 @@ const Deliveries: React.FC = () => {
                 </StatusSelect>
               </th>
             </TableHead>
-            {SortedDeliveries.map(delivery => {
+            {sortedDeliveries.map(delivery => {
               return (
                 <TableItem key={delivery.id}>
                   <td>{delivery.product}</td>

@@ -27,6 +27,7 @@ import {
   MainContainer,
 } from './styles';
 import { Option } from '../../components/Select/styles';
+import sortComparation from '../../utils/sortComparation';
 
 export interface OriginData {
   id: string;
@@ -36,11 +37,14 @@ export interface OriginData {
   state: string;
   street: string;
   zip_code: string;
+  created_at: Date;
 }
 
 const Origins: React.FC = () => {
   const [origins, setOrigins] = useState<OriginData[]>([]);
   const [filteredOrigins, setFilteredOrigins] = useState<OriginData[]>([]);
+  const [sortedOrigins, setSortedOrigins] = useState<OriginData[]>([]);
+  const [sort, setSort] = useState(0);
   const [selectedState, setSelectedState] = useState('');
   const [initialData, setInitialData] = useState<{
     id?: string;
@@ -111,6 +115,44 @@ const Origins: React.FC = () => {
     [origins],
   );
 
+  const handleSort = useCallback(
+    (toSort = true) => {
+      let sortType = sort;
+      if (toSort) {
+        sortType === 2 ? (sortType = 0) : (sortType += 1);
+      }
+
+      const originsToSort = filteredOrigins[0] ? filteredOrigins : origins;
+
+      sortType === 0 &&
+        setSortedOrigins(
+          originsToSort.sort((a, b) =>
+            sortComparation<Date>(a.created_at, b.created_at),
+          ),
+        );
+      sortType === 1 &&
+        setSortedOrigins(
+          originsToSort.sort((a, b) =>
+            sortComparation<string>(a.street, b.street),
+          ),
+        );
+      sortType === 2 &&
+        setSortedOrigins(
+          originsToSort.sort((a, b) =>
+            sortComparation<string>(b.street, a.street),
+          ),
+        );
+
+      setSort(sortType);
+    },
+    [sort, filteredOrigins, origins],
+  );
+
+  useEffect(() => {
+    handleSort(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filteredOrigins, origins]);
+
   return (
     <Container>
       <Modal>
@@ -158,7 +200,11 @@ const Origins: React.FC = () => {
         <MainContainer>
           <Table>
             <TableHead>
-              <th>Rua</th>
+              <th>
+                <button type="button" onClick={handleSort}>
+                  Rua
+                </button>
+              </th>
               <th>Cidade</th>
               <th>
                 <p>Estado</p>
@@ -172,7 +218,7 @@ const Origins: React.FC = () => {
               </th>
               <th aria-label="buttons" />
             </TableHead>
-            {(filteredOrigins[0] ? filteredOrigins : origins).map(origin => {
+            {sortedOrigins.map(origin => {
               return (
                 <TableItem key={origin.id}>
                   <td>{origin.street}</td>
