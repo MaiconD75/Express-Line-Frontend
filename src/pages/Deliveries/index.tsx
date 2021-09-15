@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  ChangeEvent,
-  MouseEvent,
-} from 'react';
+import React, { useEffect, useState, useCallback, ChangeEvent } from 'react';
 
 import api from '../../services/api';
 import { createOrUpdateEntity } from '../../services/apiMethods';
@@ -43,6 +37,7 @@ import {
   OptionsSelectContainer,
 } from '../../components/Select/ExtendedSelect';
 import { Option } from '../../components/Select/styles';
+import sortComparation from '../../utils/sortComparation';
 
 export interface DeliveryData {
   id: string;
@@ -69,9 +64,9 @@ const Deliveries: React.FC = () => {
   const [filteredDeliveries, setFilteredDeliveries] = useState<DeliveryData[]>(
     [],
   );
-  const [SortedDeliveries, setSortedDeliveries] = useState<DeliveryData[]>([]);
-  const [selectedStatus, setSelectedStatus] = useState('none');
+  const [sortedDeliveries, setSortedDeliveries] = useState<DeliveryData[]>([]);
   const [sort, setSort] = useState(0);
+  const [selectedStatus, setSelectedStatus] = useState('none');
 
   const [deliverymenList, setDeliverymenList] = useState<DeliverymanData[]>([]);
   const [originsList, setOriginsList] = useState<OriginData[]>([]);
@@ -202,23 +197,12 @@ const Deliveries: React.FC = () => {
 
   // TODO useMemo to Sort
 
-  const handleComparation = useCallback(<T extends unknown>(a: T, b: T) => {
-    if (a > b) {
-      return 1;
-    }
-    if (a < b) {
-      return -1;
-    }
-    return 0;
-  }, []);
-
   const handleSort = useCallback(
     (toSort = true) => {
       let sortType = sort;
       if (toSort) {
         sortType === 2 ? (sortType = 0) : (sortType += 1);
       }
-      console.log(sortType);
 
       const deliveriesToSort = filteredDeliveries[0]
         ? filteredDeliveries
@@ -227,25 +211,25 @@ const Deliveries: React.FC = () => {
       sortType === 0 &&
         setSortedDeliveries(
           deliveriesToSort.sort((a, b) =>
-            handleComparation<Date>(a.created_at, b.created_at),
+            sortComparation<Date>(a.created_at, b.created_at),
           ),
         );
       sortType === 1 &&
         setSortedDeliveries(
           deliveriesToSort.sort((a, b) =>
-            handleComparation<string>(a.product, b.product),
+            sortComparation<string>(a.product, b.product),
           ),
         );
       sortType === 2 &&
         setSortedDeliveries(
           deliveriesToSort.sort((a, b) =>
-            handleComparation<string>(b.product, a.product),
+            sortComparation<string>(b.product, a.product),
           ),
         );
 
       setSort(sortType);
     },
-    [sort, filteredDeliveries, deliveries, handleComparation],
+    [sort, filteredDeliveries, deliveries],
   );
 
   useEffect(() => {
@@ -404,7 +388,7 @@ const Deliveries: React.FC = () => {
                 </StatusSelect>
               </th>
             </TableHead>
-            {SortedDeliveries.map(delivery => {
+            {sortedDeliveries.map(delivery => {
               return (
                 <TableItem key={delivery.id}>
                   <td>{delivery.product}</td>
