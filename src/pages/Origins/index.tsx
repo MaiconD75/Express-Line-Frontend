@@ -111,6 +111,46 @@ const Origins: React.FC = () => {
     [origins],
   );
 
+  const handleSort = useCallback(
+    (toSort = true) => {
+      let sortType = sort;
+      if (toSort) {
+        sortType === 2 ? (sortType = 0) : (sortType += 1);
+      }
+
+      const deliverymenToSort = filteredDeliverymen[0]
+        ? filteredDeliverymen
+        : deliverymen;
+
+      sortType === 0 &&
+        setSortedDeliverymen(
+          deliverymenToSort.sort((a, b) =>
+            sortComparation<Date>(a.created_at, b.created_at),
+          ),
+        );
+      sortType === 1 &&
+        setSortedDeliverymen(
+          deliverymenToSort.sort((a, b) =>
+            sortComparation<string>(a.name, b.name),
+          ),
+        );
+      sortType === 2 &&
+        setSortedDeliverymen(
+          deliverymenToSort.sort((a, b) =>
+            sortComparation<string>(b.name, a.name),
+          ),
+        );
+
+      setSort(sortType);
+    },
+    [sort, filteredDeliverymen, deliverymen],
+  );
+
+  useEffect(() => {
+    handleSort(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filteredDeliverymen, deliverymen]);
+
   return (
     <Container>
       <Modal>
