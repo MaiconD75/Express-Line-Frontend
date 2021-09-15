@@ -27,6 +27,7 @@ import {
   MainContainer,
 } from './styles';
 import { Option } from '../../components/Select/styles';
+import sortComparation from '../../utils/sortComparation';
 
 export interface RecipientData {
   id: string;
@@ -37,6 +38,7 @@ export interface RecipientData {
   state: string;
   street: string;
   zip_code: string;
+  created_at: Date;
 }
 
 const Recipients: React.FC = () => {
@@ -44,6 +46,9 @@ const Recipients: React.FC = () => {
   const [filteredRecipients, setFilteredRecipients] = useState<RecipientData[]>(
     [],
   );
+  const [sortedRecipients, setSortedRecipients] = useState<RecipientData[]>([]);
+  const [sort, setSort] = useState(0);
+
   const [selectedState, setSelectedState] = useState('');
   const [initialData, setInitialData] = useState<{
     id?: string;
@@ -115,6 +120,46 @@ const Recipients: React.FC = () => {
     [recipients],
   );
 
+  const handleSort = useCallback(
+    (toSort = true) => {
+      let sortType = sort;
+      if (toSort) {
+        sortType === 2 ? (sortType = 0) : (sortType += 1);
+      }
+
+      const recipientsToSort = filteredRecipients[0]
+        ? filteredRecipients
+        : recipients;
+
+      sortType === 0 &&
+        setSortedRecipients(
+          recipientsToSort.sort((a, b) =>
+            sortComparation<Date>(a.created_at, b.created_at),
+          ),
+        );
+      sortType === 1 &&
+        setSortedRecipients(
+          recipientsToSort.sort((a, b) =>
+            sortComparation<string>(a.name, b.name),
+          ),
+        );
+      sortType === 2 &&
+        setSortedRecipients(
+          recipientsToSort.sort((a, b) =>
+            sortComparation<string>(b.name, a.name),
+          ),
+        );
+
+      setSort(sortType);
+    },
+    [sort, filteredRecipients, recipients],
+  );
+
+  useEffect(() => {
+    handleSort(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filteredRecipients, recipients]);
+
   return (
     <Container>
       <Modal>
@@ -165,7 +210,11 @@ const Recipients: React.FC = () => {
         <MainContainer>
           <Table>
             <TableHead>
-              <th>Nome</th>
+              <th>
+                <button type="button" onClick={handleSort}>
+                  Nome
+                </button>
+              </th>
               <th>Rua</th>
               <th>Cidade</th>
               <th>
@@ -180,41 +229,39 @@ const Recipients: React.FC = () => {
               </th>
               <th aria-label="buttons" />
             </TableHead>
-            {(filteredRecipients[0] ? filteredRecipients : recipients).map(
-              recipient => {
-                return (
-                  <TableItem key={recipient.id}>
-                    <td>{recipient.name}</td>
-                    <td>{recipient.street}</td>
-                    <td>{recipient.city}</td>
-                    <td>
-                      <p>{recipient.state}</p>
-                    </td>
-                    <td>
-                      <p>{recipient.number}</p>
-                    </td>
-                    <td>{recipient.complement || 'Sem complemento'}</td>
-                    <td>
-                      <p>{recipient.zip_code}</p>
-                    </td>
-                    <td>
-                      <ActionButton
-                        color="#ffc600"
-                        onClick={() => handleOpenForm('Atualizar', recipient)}
-                      >
-                        <img src={editImg} alt="Editar" />
-                      </ActionButton>
-                      <ActionButton
-                        color="#bd1111"
-                        onClick={() => handleDeleteItem(recipient.id)}
-                      >
-                        <img src={trashImg} alt="Excluir" />
-                      </ActionButton>
-                    </td>
-                  </TableItem>
-                );
-              },
-            )}
+            {sortedRecipients.map(recipient => {
+              return (
+                <TableItem key={recipient.id}>
+                  <td>{recipient.name}</td>
+                  <td>{recipient.street}</td>
+                  <td>{recipient.city}</td>
+                  <td>
+                    <p>{recipient.state}</p>
+                  </td>
+                  <td>
+                    <p>{recipient.number}</p>
+                  </td>
+                  <td>{recipient.complement || 'Sem complemento'}</td>
+                  <td>
+                    <p>{recipient.zip_code}</p>
+                  </td>
+                  <td>
+                    <ActionButton
+                      color="#ffc600"
+                      onClick={() => handleOpenForm('Atualizar', recipient)}
+                    >
+                      <img src={editImg} alt="Editar" />
+                    </ActionButton>
+                    <ActionButton
+                      color="#bd1111"
+                      onClick={() => handleDeleteItem(recipient.id)}
+                    >
+                      <img src={trashImg} alt="Excluir" />
+                    </ActionButton>
+                  </td>
+                </TableItem>
+              );
+            })}
           </Table>
         </MainContainer>
       </PageContainer>

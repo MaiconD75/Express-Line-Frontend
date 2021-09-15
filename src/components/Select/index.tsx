@@ -36,6 +36,7 @@ const Select: React.FC<SelectInputProps> = ({
     <ControlledForm>
       <input readOnly defaultValue={defaultValue} hidden ref={inputRef} />
       <InputSelect
+        displayEmpty
         onChange={e => {
           if (inputRef.current) {
             inputRef.current.value = `${e.target.value}`;
