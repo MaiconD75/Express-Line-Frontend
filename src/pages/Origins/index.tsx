@@ -133,13 +133,19 @@ const Origins: React.FC = () => {
       sortType === 1 &&
         setSortedOrigins(
           originsToSort.sort((a, b) =>
-            sortComparation<string>(a.street, b.street),
+            sortComparation<string>(
+              a.street.toLowerCase(),
+              b.street.toLowerCase(),
+            ),
           ),
         );
       sortType === 2 &&
         setSortedOrigins(
           originsToSort.sort((a, b) =>
-            sortComparation<string>(b.street, a.street),
+            sortComparation<string>(
+              b.street.toLowerCase(),
+              a.street.toLowerCase(),
+            ),
           ),
         );
 

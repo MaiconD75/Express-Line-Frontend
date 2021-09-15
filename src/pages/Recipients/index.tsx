@@ -140,13 +140,13 @@ const Recipients: React.FC = () => {
       sortType === 1 &&
         setSortedRecipients(
           recipientsToSort.sort((a, b) =>
-            sortComparation<string>(a.name, b.name),
+            sortComparation<string>(a.name.toLowerCase(), b.name.toLowerCase()),
           ),
         );
       sortType === 2 &&
         setSortedRecipients(
           recipientsToSort.sort((a, b) =>
-            sortComparation<string>(b.name, a.name),
+            sortComparation<string>(b.name.toLowerCase(), a.name.toLowerCase()),
           ),
         );
 

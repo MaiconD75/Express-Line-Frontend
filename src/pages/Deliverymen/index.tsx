@@ -175,13 +175,13 @@ const Deliverymen: React.FC = () => {
       sortType === 1 &&
         setSortedDeliverymen(
           deliverymenToSort.sort((a, b) =>
-            sortComparation<string>(a.name, b.name),
+            sortComparation<string>(a.name.toLowerCase(), b.name.toLowerCase()),
           ),
         );
       sortType === 2 &&
         setSortedDeliverymen(
           deliverymenToSort.sort((a, b) =>
-            sortComparation<string>(b.name, a.name),
+            sortComparation<string>(b.name.toLowerCase(), a.name.toLowerCase()),
           ),
         );
 
