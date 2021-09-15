@@ -33,6 +33,7 @@ import {
   AvatarContainer,
 } from './styles';
 import sortComparation from '../../utils/sortComparation';
+import { SortIcon } from '../../components/Table/TableHead/styles';
 
 export interface DeliverymanData {
   avatar: string;
@@ -252,6 +253,7 @@ const Deliverymen: React.FC = () => {
               <th>
                 <button type="button" onClick={handleSort}>
                   Nome
+                  <SortIcon name="Ordenar" sortType={sort} />
                 </button>
               </th>
               <th>Email</th>
