@@ -1,4 +1,5 @@
 import React from 'react';
+import { toast } from 'react-hot-toast';
 
 import Form from '../../components/Form';
 import Input from '../../components/Input';
@@ -20,7 +21,15 @@ const SendEmail: React.FC = () => {
   async function handleSubmit({
     email,
   }: createTokenCredentials): Promise<void> {
-    await api.post('/users/forgotten-password', { email });
+    try {
+      await api.post('/users/forgotten-password', { email });
+
+      toast.success('Um email de troca de senha foi enviado para você', {
+        duration: 5000,
+      });
+    } catch (err) {
+      toast.error(err.response.data.message);
+    }
   }
 
   return (

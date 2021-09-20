@@ -1,6 +1,8 @@
 import React from 'react';
 
 import { useHistory, useParams } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+
 import Form from '../../components/Form';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -24,9 +26,16 @@ const ForgottenPassword: React.FC = () => {
   async function handleSubmit({
     password,
   }: forgottenPasswordCredentials): Promise<void> {
-    await api.patch(`/users/forgotten-password/${token}`, { password });
+    try {
+      await api.patch(`/users/forgotten-password/${token}`, { password });
 
-    history.push('/');
+      history.push('/');
+      toast.success('Sua senha foi alterada com sucesso', {
+        duration: 5000,
+      });
+    } catch (err) {
+      toast.error(err.response.data.message);
+    }
   }
 
   return (

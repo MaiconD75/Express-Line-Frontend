@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { toast } from 'react-hot-toast';
+
 import { useHistory } from 'react-router-dom';
 import Form from '../../components/Form';
 import Input from '../../components/Input';
@@ -29,11 +31,21 @@ const SignUp: React.FC = () => {
     email,
     password,
   }: SignUpCredentials): Promise<void> {
-    await api.post('/users', {
-      name,
-      email,
-      password,
-    });
+    try {
+      await api.post('/users', {
+        name,
+        email,
+        password,
+      });
+
+      toast.success('Um email de confirmação foi enviado para você', {
+        duration: 5000,
+      });
+
+      history.push('/');
+    } catch (err) {
+      toast.error(err.response.data.message);
+    }
   }
 
   return (
