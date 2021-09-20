@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { useAuth } from '../../hooks/AuthContext';
-
+import { useHistory } from 'react-router-dom';
 import Form from '../../components/Form';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -23,7 +22,7 @@ interface SignUpCredentials {
 }
 
 const SignUp: React.FC = () => {
-  const { login } = useAuth();
+  const history = useHistory();
 
   async function handleSubmit({
     name,
@@ -35,8 +34,6 @@ const SignUp: React.FC = () => {
       email,
       password,
     });
-
-    login({ email, password });
   }
 
   return (
