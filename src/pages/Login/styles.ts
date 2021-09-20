@@ -35,6 +35,7 @@ export const Info = styled.div`
 `;
 
 export const MainContainer = styled.div`
+  overflow-y: scroll;
   width: 42vw;
   height: 100vh;
 

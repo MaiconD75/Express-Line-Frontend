@@ -63,7 +63,7 @@ const SideBar: React.FC<SideBarProps> = ({ selectedTab }) => {
         <TabButton
           isSelected={selectedTab === 'delivery'}
           disabled={selectedTab === 'delivery'}
-          onClick={() => handleSelectTab('Deliveries')}
+          onClick={() => handleSelectTab('deliveries')}
         >
           <img src={deliveryImg} alt="Entregas" />
           {isExtended && <p>Entregas</p>}
@@ -71,7 +71,7 @@ const SideBar: React.FC<SideBarProps> = ({ selectedTab }) => {
         <TabButton
           isSelected={selectedTab === 'deliveryman'}
           disabled={selectedTab === 'deliveryman'}
-          onClick={() => handleSelectTab('Deliverymen')}
+          onClick={() => handleSelectTab('deliverymen')}
         >
           <img src={deliverymanImg} alt="Entregadores" />
           {isExtended && <p>Entregadores</p>}
@@ -79,7 +79,7 @@ const SideBar: React.FC<SideBarProps> = ({ selectedTab }) => {
         <TabButton
           isSelected={selectedTab === 'origin'}
           disabled={selectedTab === 'origin'}
-          onClick={() => handleSelectTab('Origins')}
+          onClick={() => handleSelectTab('origins')}
         >
           <img src={stockImg} alt="Estoques" />
           {isExtended && <p>Estoques</p>}
@@ -87,7 +87,7 @@ const SideBar: React.FC<SideBarProps> = ({ selectedTab }) => {
         <TabButton
           isSelected={selectedTab === 'recipient'}
           disabled={selectedTab === 'recipient'}
-          onClick={() => handleSelectTab('Recipients')}
+          onClick={() => handleSelectTab('recipients')}
         >
           <img src={recipientImg} alt="Destinatários" />
           {isExtended && <p>Destinatários</p>}

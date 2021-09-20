@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback, ChangeEvent } from 'react';
 
-import { FiChevronDown } from 'react-icons/fi';
 import api from '../../services/api';
 import { createOrUpdateEntity } from '../../services/apiMethods';
 import { DeliverymanData } from '../Deliverymen';

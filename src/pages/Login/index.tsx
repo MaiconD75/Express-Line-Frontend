@@ -72,14 +72,14 @@ const Login: React.FC = () => {
               type="password"
             />
 
-            <Link to="/">Esqueci minha senha</Link>
+            <Link to="/send-email">Esqueci minha senha</Link>
 
             <Button type="submit">Entrar</Button>
           </Form>
 
           <SignUpContainer>
             <div />
-            <Link to="/SignUp">Criar conta</Link>
+            <Link to="/sign-up">Criar conta</Link>
             <div />
           </SignUpContainer>
         </LoginContainer>
