@@ -1,6 +1,8 @@
 import React from 'react';
 
 import { useHistory, useParams } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+
 import Button from '../../components/Button';
 
 import logoImg from '../../assets/png/logo.png';
@@ -16,6 +18,9 @@ const ConfirmEmail: React.FC = () => {
     await api.patch(`/users/confirm-email/${id}`);
 
     history.push('/');
+    toast.success('Sua conta foi criada com sucesso', {
+      duration: 5000,
+    });
   }
 
   return (
