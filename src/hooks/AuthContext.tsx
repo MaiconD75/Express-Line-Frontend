@@ -68,7 +68,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 
       setData({ token, data: user });
 
-      history.push('/Deliveries');
+      history.push('/deliveries');
     },
     [history],
   );
