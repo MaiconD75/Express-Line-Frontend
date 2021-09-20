@@ -10,6 +10,7 @@ import Route from './Route';
 import Recipients from '../pages/Recipients';
 import ForgottenPassword from '../pages/ForgottenPassword';
 import SendEmail from '../pages/SendEmail';
+import ConfirmEmail from '../pages/ConfirmEmail';
 
 const Routes: React.FC = () => {
   return (
@@ -22,6 +23,7 @@ const Routes: React.FC = () => {
         component={ForgottenPassword}
       />
       <Route path="/send-email" exact component={SendEmail} />
+      <Route path="/confirm-email/:id" exact component={ConfirmEmail} />
       <Route path="/deliveries" needAuth exact component={Deliveries} />
       <Route path="/deliverymen" needAuth exact component={Deliverymen} />
       <Route path="/origins" needAuth exact component={Origins} />
