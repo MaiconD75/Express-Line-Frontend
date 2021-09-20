@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const Container = styled.table`
   width: 100%;
   min-width: 1600px;
-  height: 200px;
+  height: 100%;
   padding: 0 70px;
   overflow-x: scroll;
 
