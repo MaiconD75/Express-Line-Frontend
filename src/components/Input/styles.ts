@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import Tooltip from '../Tooltip';
 
 interface InputContainerProps {
   error: string | undefined;
@@ -72,11 +73,6 @@ export const InputContainer = styled.div<InputContainerProps>`
       color: #ccc;
     }
   }
-
-  svg {
-    height: 24px;
-    width: 48px;
-  }
 `;
 
 export const IconContainer = styled.div`
@@ -94,5 +90,21 @@ export const IconContainer = styled.div`
     object-fit: contain;
     max-width: 40%;
     height: auto;
+  }
+`;
+
+export const Errors = styled(Tooltip)`
+  svg {
+    height: 24px;
+    width: 48px;
+  }
+
+  span {
+    background-color: #bd1111;
+    color: #fefefe;
+
+    &::after {
+      border-color: #bd1111 transparent;
+    }
   }
 `;
