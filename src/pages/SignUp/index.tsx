@@ -1,4 +1,5 @@
 import React from 'react';
+import * as Yup from 'yup';
 
 import { toast } from 'react-hot-toast';
 
@@ -26,26 +27,28 @@ interface SignUpCredentials {
 const SignUp: React.FC = () => {
   const history = useHistory();
 
-  async function handleSubmit({
-    name,
-    email,
-    password,
-  }: SignUpCredentials): Promise<void> {
-    try {
-      await api.post('/users', {
-        name,
-        email,
-        password,
-      });
+  async function handleSubmit(data: SignUpCredentials): Promise<void> {
+    const schema = Yup.object().shape({
+      name: Yup.string().required('O nome é obrigatório'),
+      email: Yup.string()
+        .email('Insira um email válido')
+        .required('O email é obrigatório'),
+      password: Yup.string()
+        .min(6, 'A senha precisa conter pelo menos 6 caracteres')
+        .required('A senha é obrigatório'),
+    });
 
-      toast.success('Um email de confirmação foi enviado para você', {
-        duration: 5000,
-      });
+    await schema.validate(data, {
+      abortEarly: false,
+    });
 
-      history.push('/');
-    } catch (err) {
-      toast.error(err.response.data.message);
-    }
+    await api.post('/users', data);
+
+    toast.success('Um email de confirmação foi enviado para você', {
+      duration: 5000,
+    });
+
+    history.push('/');
   }
 
   return (
