@@ -1,5 +1,6 @@
 import { useField } from '@unform/core';
 import React, { InputHTMLAttributes, useEffect, useRef } from 'react';
+import { FiAlertCircle } from 'react-icons/fi';
 import { Container, InputContainer, IconContainer } from './styles';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -29,14 +30,14 @@ const Input: React.FC<InputProps> = ({
   return (
     <Container hidden={hidden}>
       {label && <p>{label}</p>}
-      {error && <p>error</p>}
-      <InputContainer>
+      <InputContainer error={error}>
         {icon && (
           <IconContainer>
             <img src={icon} alt={label} />
           </IconContainer>
         )}
         <input defaultValue={defaultValue} {...rest} ref={inputRef} />
+        {error && <FiAlertCircle color="#bd1111" />}
       </InputContainer>
     </Container>
   );

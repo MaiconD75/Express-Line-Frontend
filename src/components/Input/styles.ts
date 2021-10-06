@@ -1,4 +1,8 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+interface InputContainerProps {
+  error: string | undefined;
+}
 
 export const Container = styled.div`
   p {
@@ -8,7 +12,7 @@ export const Container = styled.div`
   }
 `;
 
-export const InputContainer = styled.div`
+export const InputContainer = styled.div<InputContainerProps>`
   width: 100%;
   height: 48px;
   margin: 12px 0 0;
@@ -22,6 +26,24 @@ export const InputContainer = styled.div`
 
   position: relative;
 
+  ${props =>
+    props.error &&
+    css`
+      &:after {
+        content: '';
+        width: 100%;
+        height: 48px;
+        position: absolute;
+        top: -2px;
+        left: -2px;
+
+        pointer-events: none;
+        background-color: none;
+        border: 2px solid #bd1111;
+        border-radius: 10px;
+      }
+    `}
+
   &:focus-within:after {
     content: '';
     width: 100%;
@@ -30,14 +52,15 @@ export const InputContainer = styled.div`
     top: -2px;
     left: -2px;
 
-    background-color: transparent;
+    pointer-events: none;
+    background-color: none;
     border: 2px solid #072ac8;
     border-radius: 10px;
   }
 
   input {
     border: none;
-    background-color: transparent;
+    background-color: none;
     height: 100%;
     width: 100%;
     padding: 0 24px;
@@ -49,11 +72,17 @@ export const InputContainer = styled.div`
       color: #ccc;
     }
   }
+
+  svg {
+    height: 24px;
+    width: 48px;
+  }
 `;
 
 export const IconContainer = styled.div`
   height: calc(100% - 16px);
-  width: 48px;
+  min-width: 48px;
+  max-width: 48px;
   border-right: 2px solid #ccc;
   padding: auto;
 
