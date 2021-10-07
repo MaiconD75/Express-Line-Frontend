@@ -27,14 +27,23 @@ export const MainContainer = styled.div`
 
   background-color: #f5f5f5;
   align-items: center;
-
-  overflow-y: scroll;
+  overflow: auto;
 
   border-radius: 12px;
 
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    border-radius: 0 12px 12px 0;
+  }
+
   > div {
     width: 100%;
-    min-height: 100%;
+    padding: 0 2px;
+    box-sizing: content-box;
+    height: 100%;
     display: flex;
     justify-content: space-between;
     flex-direction: column;
@@ -45,6 +54,7 @@ export const MainContainer = styled.div`
       display: flex;
       flex-direction: column;
       align-items: center;
+      overflow: none;
     }
 
     h1 {
@@ -70,6 +80,7 @@ export const ButtonContainer = styled.div`
 
   button {
     width: 288px;
+    margin-bottom: 16px;
 
     &:nth-child(1) {
       background-color: #bd1111;

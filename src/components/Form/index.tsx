@@ -37,8 +37,6 @@ const Form: React.FC<NewFormProps> = ({
           });
 
           formRef.current?.setErrors(errorMessages);
-
-          console.log(errorMessages);
         }
       }
     },
