@@ -18,6 +18,8 @@ export const Container = styled.div`
 
     background-color: #fefefe;
     box-shadow: 0 0 32px rgba(0, 0, 0, 0.3);
+
+    overflow-y: auto;
   }
 
   a {

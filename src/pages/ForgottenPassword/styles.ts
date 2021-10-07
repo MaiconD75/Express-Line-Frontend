@@ -18,6 +18,8 @@ export const Container = styled.div`
 
     background-color: #fefefe;
     box-shadow: 0 0 32px rgba(0, 0, 0, 0.3);
+
+    overflow-y: auto;
   }
 
   a {
@@ -25,6 +27,7 @@ export const Container = styled.div`
     flex-direction: row;
     align-items: center;
     align-self: center;
+    margin-bottom: 16px;
 
     img {
       height: 12px;

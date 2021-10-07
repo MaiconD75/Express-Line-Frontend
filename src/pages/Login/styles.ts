@@ -12,6 +12,7 @@ export const Info = styled.div`
   display: flex;
   justify-content: space-around;
   flex-direction: column;
+  overflow: hidden;
 
   & > img {
     width: 75%;
@@ -35,7 +36,7 @@ export const Info = styled.div`
 `;
 
 export const MainContainer = styled.div`
-  overflow-y: scroll;
+  overflow-y: auto;
   width: 42vw;
   height: 100vh;
 
