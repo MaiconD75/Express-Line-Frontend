@@ -67,6 +67,7 @@ export const HeadContainer = styled.div`
 export const MainContainer = styled.div`
   width: 100%;
   height: 100%;
+  overflow: auto;
 
   th:nth-child(2),
   td:nth-child(2) {
