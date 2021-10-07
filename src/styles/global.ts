@@ -9,6 +9,7 @@ export default createGlobalStyle`
 
   body {
     background: #f5f5f5;
+    overflow: hidden;
   }
 
   body,
@@ -24,5 +25,26 @@ export default createGlobalStyle`
   em {
     font: 20px 'Roboto', sans-serif;
     color: #ccc;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.25);
+    z-index: 10;
+  }
+
+  ::-webkit-scrollbar-corner{
+    background-color: transparent;
+  }
+
+  ::-webkit-scrollbar-track{
+    border-radius: 4px;
+    background: #fefefe;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #cecece;
+    border-radius: 4px;
   }
 `;

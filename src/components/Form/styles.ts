@@ -1,4 +1,3 @@
-import { darken } from 'polished';
 import styled from 'styled-components';
 import { Form } from '@unform/web';
 
