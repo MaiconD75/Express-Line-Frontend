@@ -31,11 +31,15 @@ export default createGlobalStyle`
     width: 8px;
     height: 8px;
     box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.25);
-    border-radius: 4px;
     z-index: 10;
   }
 
+  ::-webkit-scrollbar-corner{
+    background-color: transparent;
+  }
+
   ::-webkit-scrollbar-track{
+    border-radius: 4px;
     background: #fefefe;
   }
 

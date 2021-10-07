@@ -31,14 +31,6 @@ export const MainContainer = styled.div`
 
   border-radius: 12px;
 
-  ::-webkit-scrollbar {
-    width: 10px;
-  }
-
-  &::-webkit-scrollbar-track {
-    border-radius: 0 12px 12px 0;
-  }
-
   > div {
     width: 100%;
     padding: 0 2px;
