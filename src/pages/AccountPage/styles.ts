@@ -22,6 +22,10 @@ export const Container = styled.div`
     overflow-y: auto;
   }
 
+  & > div > p {
+    margin: 32px 0;
+  }
+
   a {
     display: flex;
     flex-direction: row;
