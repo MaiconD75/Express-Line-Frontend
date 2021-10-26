@@ -4,13 +4,13 @@ import { Redirect, Switch } from 'react-router-dom';
 import Deliveries from '../pages/Deliveries';
 import Deliverymen from '../pages/Deliverymen';
 import Login from '../pages/Login';
-import SignUp from '../pages/SignUp';
+import SignUp from '../pages/AccountPage/SignUp';
 import Origins from '../pages/Origins';
 import Route from './Route';
 import Recipients from '../pages/Recipients';
-import ForgottenPassword from '../pages/ForgottenPassword';
-import SendEmail from '../pages/SendEmail';
-import ConfirmEmail from '../pages/ConfirmEmail';
+import ForgottenPassword from '../pages/AccountPage/ForgottenPassword';
+import SendEmail from '../pages/AccountPage/SendEmail';
+import ConfirmEmail from '../pages/AccountPage/ConfirmEmail';
 
 const Routes: React.FC = () => {
   return (
