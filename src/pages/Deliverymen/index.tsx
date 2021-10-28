@@ -257,12 +257,6 @@ const Deliverymen: React.FC = () => {
                 </button>
               </th>
               <th>Email</th>
-              <th>
-                <p>Entregas</p>
-              </th>
-              <th>
-                <p>Entregas Canceladas</p>
-              </th>
               <th aria-label="buttons" />
             </TableHead>
             {sortedDeliverymen.map(deliveryman => {
@@ -288,12 +282,6 @@ const Deliverymen: React.FC = () => {
                   </td>
                   <td>{deliveryman.name}</td>
                   <td>{deliveryman.email}</td>
-                  <td>
-                    <p>83</p>
-                  </td>
-                  <td>
-                    <p>5</p>
-                  </td>
                   <td>
                     <ActionButton
                       color="#ffc600"
