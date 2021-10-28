@@ -3,7 +3,7 @@ import React, { useEffect, useState, useCallback, ChangeEvent } from 'react';
 import api from '../../services/api';
 import { createOrUpdateEntity } from '../../services/apiMethods';
 import { DeliverymanData } from '../Deliverymen';
-import FormatAddres from '../../utils/FormatAddres';
+import FormatAddress from '../../utils/FormatAddress';
 import { OriginData } from '../Origins';
 import { RecipientData } from '../Recipients';
 import { useModal } from '../../hooks/ModalContext';
@@ -196,8 +196,6 @@ const Deliveries: React.FC = () => {
     [deliveries],
   );
 
-  // TODO useMemo to Sort
-
   const handleSort = useCallback(
     (toSort = true) => {
       let sortType = sort;
@@ -268,14 +266,6 @@ const Deliveries: React.FC = () => {
                 <div>
                   <span>Email:</span>
                   <span>{selectedDeliveryman.email}</span>
-                </div>
-                <div>
-                  <span>Entregas Concluidas:</span>
-                  <span>191</span>
-                </div>
-                <div>
-                  <span>Entregas Canceladas:</span>
-                  <span>12</span>
                 </div>
               </InfoContainer>
             </OptionsSelectContainer>
@@ -400,10 +390,12 @@ const Deliveries: React.FC = () => {
               return (
                 <TableItem key={delivery.id}>
                   <td>{delivery.product}</td>
-                  <td>{delivery.deliveryman.name}</td>
-                  <td>{delivery.recipient.name}</td>
+                  <td>{delivery.deliveryman.name || '-'}</td>
+                  <td>{delivery.recipient.name || '-'}</td>
                   <td>
-                    <p>{FormatAddres(delivery.origin)}</p>
+                    <p>
+                      {delivery.origin ? FormatAddress(delivery.origin) : '-'}
+                    </p>
                   </td>
 
                   <StatusContainer>

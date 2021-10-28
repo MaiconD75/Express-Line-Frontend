@@ -9,8 +9,8 @@ interface Address {
   zip_code: string;
 }
 
-const FormatAddres = (address: Address): string => {
+const FormatAddress = (address: Address): string => {
   return `${address.street}, ${address.number}, ${address.city}-${address.state}`;
 };
 
-export default FormatAddres;
+export default FormatAddress;
